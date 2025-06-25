@@ -45,7 +45,7 @@ namespace carla {
     /// @name Member types
     // =========================================================================
     /// @{
-
+-
   public:
 
     using value_type = unsigned char;

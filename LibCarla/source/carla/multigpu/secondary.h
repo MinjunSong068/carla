@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Computer Vision Center (CVC) at the Universitat Autonoma
+// Copyright (c) 2024 Computer Vision Center (CVC) at the Universitat Autonoma
 // de Barcelona (UAB).
 //
 // This work is licensed under the terms of the MIT license.
@@ -33,6 +33,7 @@ namespace multigpu {
 
   class Secondary
     : public std::enable_shared_from_this<Secondary>,
+      public std::string _docker_node,
       private profiler::LifetimeProfiled,
       private NonCopyable {
   public:
@@ -40,8 +41,9 @@ namespace multigpu {
     using endpoint = boost::asio::ip::tcp::endpoint;
     using protocol_type = endpoint::protocol_type;
 
-    Secondary(boost::asio::ip::tcp::endpoint ep, SecondaryCommands::callback_type callback);
-    Secondary(std::string ip, uint16_t port, SecondaryCommands::callback_type callback);
+    Secondary(boost::asio::ip::tcp::endpoint ep, SecondaryCommands::callback_type callback, std::string dockerNode);
+    Secondary(std::string ip, uint16_t port, SecondaryCommands::callback_type callback, std::string dockerNode);
+    /// try using table to connect client and dockernode 
     ~Secondary();
 
     void Connect();
@@ -53,6 +55,10 @@ namespace multigpu {
     void Write(std::shared_ptr<const carla::streaming::detail::tcp::Message> message);
     void Write(Buffer buffer);
     void Write(std::string text);
+
+    std::string dockerNode() {
+      return _docker_node;
+    }
 
     SecondaryCommands &GetCommander() {
       return _commander;

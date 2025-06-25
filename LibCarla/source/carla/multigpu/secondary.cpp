@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Computer Vision Center (CVC) at the Universitat Autonoma
+// Copyright (c) 2024 Computer Vision Center (CVC) at the Universitat Autonoma
 // de Barcelona (UAB).
 //
 // This work is licensed under the terms of the MIT license.
@@ -26,14 +26,15 @@ namespace multigpu {
 
   Secondary::Secondary(
     boost::asio::ip::tcp::endpoint ep,
-    SecondaryCommands::callback_type callback) :
+    SecondaryCommands::callback_type callback,
+    std::string dockerNode) :
       _pool(),
       _socket(_pool.io_context()),
       _endpoint(ep),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _buffer_pool(std::make_shared<BufferPool>()) {
-
+      _buffer_pool(std::make_shared<BufferPool>()),
+      _docker_node(std::move(dockerNode)) {
       _commander.set_callback(callback);
     }
 
@@ -41,12 +42,14 @@ namespace multigpu {
   Secondary::Secondary(
     std::string ip,
     uint16_t port,
-    SecondaryCommands::callback_type callback) :
+    SecondaryCommands::callback_type callback,
+    std::string dockerNode) :
       _pool(),
       _socket(_pool.io_context()),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _buffer_pool(std::make_shared<BufferPool>()) {
+      _buffer_pool(std::make_shared<BufferPool>()),
+      _docker_node(std::move(dockerNode)) {
 
     boost::asio::ip::address ip_address = boost::asio::ip::address::from_string(ip);
     _endpoint = boost::asio::ip::tcp::endpoint(ip_address, port);
@@ -232,6 +235,13 @@ namespace multigpu {
 
       auto message = std::make_shared<IncomingMessage>(self->_buffer_pool->Pop());
 
+      if(message->dockerNode() != self->dockerNode()) {
+        
+        self->_buffer_pool->sendBack(message->pop()); //send message back to buffer pool with ID doesn't match
+        log_info("ID mismatch");
+        self->ReadData();
+      }
+
       auto handle_read_data = [weak, message](boost::system::error_code ec, size_t DEBUG_ONLY(bytes)) {
         auto self = weak.lock();
         if (!self) return;
@@ -240,6 +250,11 @@ namespace multigpu {
           DEBUG_ASSERT_NE(bytes, 0u);
           // Move the buffer to the callback function and start reading the next
           // piece of data.
+          
+          // if(message->dockerNode() == self->dockerNode()) { //check if message came from a source with the same docker swarm node
+          //   self->GetCommander().process_command(message->pop());
+          // }
+
           self->GetCommander().process_command(message->pop());
           self->ReadData();
         } else {

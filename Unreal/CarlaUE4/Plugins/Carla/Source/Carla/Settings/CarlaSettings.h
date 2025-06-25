@@ -92,6 +92,11 @@ public:
   std::string PrimaryIP = "";
   uint32      PrimaryPort = 2002u;
 
+
+  /// Secondary server docker node
+
+  std::string DockerNode = "";
+
   /// In synchronous mode, CARLA waits every tick until the control from the
   /// client is received.
   UPROPERTY(Category = "CARLA Server", VisibleAnywhere, meta = (EditCondition = bUseNetworking))

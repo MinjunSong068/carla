@@ -146,6 +146,12 @@ void UCarlaSettings::LoadSettings()
     {
       PrimaryPort = Value;
     }
+
+    if (FParse::value(FcommandLine::Get(), TEXT("-secondary-server-docker-node="), Tmp))
+    {
+      DockerNode = Value;
+    }
+
     FString StringQualityLevel;
     if (FParse::Value(FCommandLine::Get(), TEXT("-quality-level="), StringQualityLevel))
     {
