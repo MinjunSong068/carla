@@ -231,6 +231,7 @@ namespace multigpu {
       }
 
       auto message = std::make_shared<IncomingMessage>(self->_buffer_pool->Pop());
+      log_info("message: ", message); //print message recieved
 
       auto handle_read_data = [weak, message](boost::system::error_code ec, size_t DEBUG_ONLY(bytes)) {
         auto self = weak.lock();
