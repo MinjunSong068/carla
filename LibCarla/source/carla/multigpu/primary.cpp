@@ -137,7 +137,7 @@ namespace multigpu {
           // piece of data.
           self->_on_response(self, message->pop());
           std::cout << "Getting data on listener\n";
-          std::cout << "data:" << message << "\n";
+          // std::cout << "data:" << message << "\n";
           self->ReadData();
         } else {
           // As usual, if anything fails start over from the very top.
