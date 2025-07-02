@@ -41,6 +41,10 @@ namespace multigpu {
       return std::move(_buffer);
     }
 
+    auto data() {
+      return _data;
+    }
+
   private:
 
     carla::streaming::detail::message_size_type _size = 0u;

@@ -348,6 +348,11 @@ void FCarlaEngine::OnPostTick(UWorld *World, ELevelTick TickType, float DeltaSec
 
         // send frame data to secondary
         std::string Tmp(OutStream.str());
+
+        //print frame data for debugging purposes
+
+        std::cout << Tmp << "\n"
+
         SecondaryServer->GetCommander().SendFrameData(carla::Buffer(std::move((unsigned char *) Tmp.c_str()), (size_t) Tmp.size()));
 
         GetCurrentEpisode()->GetFrameData().Clear();

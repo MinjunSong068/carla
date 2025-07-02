@@ -98,6 +98,7 @@ bool UCarlaEpisode::LoadNewEpisode(const FString &MapString, bool ResetSettings)
         auto SecondaryServer = CarlaEngine->GetSecondaryServer();
         if (SecondaryServer->HasClientsConnected()) 
         {
+          std::cout << "Clients Connected\n";
           SecondaryServer->GetCommander().SendLoadMap(std::string(TCHAR_TO_UTF8(*FinalPath)));
         }
       }

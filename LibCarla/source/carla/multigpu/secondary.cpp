@@ -189,6 +189,7 @@ namespace multigpu {
   }
 
   void Secondary::Write(std::string text) {
+    std::cout << "in Secondary write\n";
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [=]() {
       auto self = weak.lock();
@@ -231,7 +232,8 @@ namespace multigpu {
       }
 
       auto message = std::make_shared<IncomingMessage>(self->_buffer_pool->Pop());
-      log_info("message: ", message); //print message recieved
+      // log_info("message: ", message); //print message recieved
+      std::cout << "message recieved in secondary\n"
 
       auto handle_read_data = [weak, message](boost::system::error_code ec, size_t DEBUG_ONLY(bytes)) {
         auto self = weak.lock();
