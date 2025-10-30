@@ -161,6 +161,11 @@ void UCarlaSettings::LoadSettings()
     {
       ROS2 = true;
     }
+
+    if (FParse::Value(FCommandLine::Get(), TEXT("-client-ip="), Tmp))
+    {
+      ClientIP = Tmp;
+    }
   }
 }
 
