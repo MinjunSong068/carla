@@ -54,6 +54,10 @@ namespace multigpu {
     void Write(Buffer buffer);
     void Write(std::string text);
 
+    string GetClientIP() const {
+      return _client_ip;
+    }
+
     SecondaryCommands &GetCommander() {
       return _commander;
     }

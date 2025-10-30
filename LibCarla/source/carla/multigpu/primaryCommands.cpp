@@ -121,6 +121,11 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) {
   else {
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer();
+
+    while(sensor_id->get_address().to_string() != server->GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
+      auto server = _router->GetNextServer();
+    }
+
     auto token = SendGetToken(sensor_id);
     // add to the maps
     _tokens[sensor_id] = token;
