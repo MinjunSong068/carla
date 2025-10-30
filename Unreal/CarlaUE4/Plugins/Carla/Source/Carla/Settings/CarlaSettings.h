@@ -78,6 +78,10 @@ private:
 
 public:
 
+
+  //IP of docker container for colocated client 
+  std::string ClientIP = "";
+
   /// World port to listen for client connections.
   UPROPERTY(Category = "CARLA Server", VisibleAnywhere, meta = (EditCondition = bUseNetworking))
   uint32 RPCPort = 2000u;

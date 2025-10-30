@@ -78,6 +78,8 @@ static void LoadSettingsFromConfig(
     ConfigFile.GetString(S_CARLA_SERVER, TEXT("PrimaryIP"), Tmp);
     Settings.PrimaryIP = TCHAR_TO_UTF8(*Tmp);
     ConfigFile.GetInt(S_CARLA_SERVER,    TEXT("PrimaryPort"), Settings.PrimaryPort);
+
+    ConfigFile.GetString(S_CARLA_SERVER, TEXT("ClientIP"), Settings.ClientIP);
   }
   ConfigFile.GetBool(S_CARLA_SERVER, TEXT("SynchronousMode"), Settings.bSynchronousMode);
   ConfigFile.GetBool(S_CARLA_SERVER, TEXT("DisableRendering"), Settings.bDisableRendering);
