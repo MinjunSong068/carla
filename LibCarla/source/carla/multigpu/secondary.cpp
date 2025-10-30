@@ -26,13 +26,15 @@ namespace multigpu {
 
   Secondary::Secondary(
     boost::asio::ip::tcp::endpoint ep,
-    SecondaryCommands::callback_type callback) :
+    SecondaryCommands::callback_type callback,
+    std::string client_ip) :
       _pool(),
       _socket(_pool.io_context()),
       _endpoint(ep),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _buffer_pool(std::make_shared<BufferPool>()) {
+      _buffer_pool(std::make_shared<BufferPool>()), 
+      _client_ip(client_ip) {
 
       _commander.set_callback(callback);
     }
@@ -41,12 +43,14 @@ namespace multigpu {
   Secondary::Secondary(
     std::string ip,
     uint16_t port,
-    SecondaryCommands::callback_type callback) :
+    SecondaryCommands::callback_type callback,
+    std::string client_ip) :
       _pool(),
       _socket(_pool.io_context()),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _buffer_pool(std::make_shared<BufferPool>()) {
+      _buffer_pool(std::make_shared<BufferPool>()),
+      _client_ip(client_ip) {
 
     boost::asio::ip::address ip_address = boost::asio::ip::address::from_string(ip);
     _endpoint = boost::asio::ip::tcp::endpoint(ip_address, port);

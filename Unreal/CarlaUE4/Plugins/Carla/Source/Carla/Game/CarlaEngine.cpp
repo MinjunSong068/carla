@@ -84,6 +84,8 @@ void FCarlaEngine::NotifyInitGame(const UCarlaSettings &Settings)
     const auto PrimaryIP     = Settings.PrimaryIP;
     const auto PrimaryPort   = Settings.PrimaryPort;
 
+    const auto ClientIP      = Settings.ClientIP;
+
     auto BroadcastStream     = Server.Start(Settings.RPCPort, StreamingPort, SecondaryPort);
     Server.AsyncRun(FCarlaEngine_GetNumberOfThreadsForRPCServer());
 
@@ -198,7 +200,8 @@ void FCarlaEngine::NotifyInitGame(const UCarlaSettings &Settings)
         }
       };
 
-      Secondary = std::make_shared<carla::multigpu::Secondary>(PrimaryIP, PrimaryPort, CommandExecutor);
+      Secondary = std::make_shared<carla::multigpu::Secondary>(PrimaryIP, PrimaryPort, CommandExecutor, ClientIP);
+
       Secondary->Connect();
       // set this server in synchronous mode
       bSynchronousMode = true;

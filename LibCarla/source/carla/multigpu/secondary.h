@@ -40,8 +40,8 @@ namespace multigpu {
     using endpoint = boost::asio::ip::tcp::endpoint;
     using protocol_type = endpoint::protocol_type;
 
-    Secondary(boost::asio::ip::tcp::endpoint ep, SecondaryCommands::callback_type callback);
-    Secondary(std::string ip, uint16_t port, SecondaryCommands::callback_type callback);
+    Secondary(boost::asio::ip::tcp::endpoint ep, SecondaryCommands::callback_type callback, std::string client_ip);
+    Secondary(std::string ip, uint16_t port, SecondaryCommands::callback_type callback, std::string client_ip);
     ~Secondary();
 
     void Connect();
@@ -71,6 +71,8 @@ namespace multigpu {
     void Reconnect();
 
     void ReadData();
+
+    std::string                       _client_ip;
 
     ThreadPool                        _pool;
     boost::asio::ip::tcp::socket      _socket;
