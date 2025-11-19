@@ -122,7 +122,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) {
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer();
 
-    while(sensor_id->get_address().to_string() != server->GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
+    while(sensor_id.get_address().to_string() != server.GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
       auto server = _router->GetNextServer();
     }
 
