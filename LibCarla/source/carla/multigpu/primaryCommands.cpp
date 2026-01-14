@@ -127,7 +127,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
 
     //GetClientIP is from secondary.h
 
-    while(it->get_address().to_string() != server->GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
+    while(it->second.get_address().to_string() != _router->GetClientIPFromSession(server)) {  //find secondary server with ClientIP matching sensor_id's 
       server = _router->GetNextServer();
     }
 

@@ -95,14 +95,14 @@ class FCarlaServer::FPimpl
 {
 public:
 
-  FPimpl(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort)
+  FPimpl(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string ClientIP)
     : Server(RPCPort),
       StreamingServer(StreamingPort),
       BroadcastStream(StreamingServer.MakeStream())
   {
     // we need to create shared_ptr from the router for some handlers to live
-    SecondaryServer = std::make_shared<carla::multigpu::Router>(SecondaryPort);
-    SecondaryServer->SetCallbacks();
+    SecondaryServer = std::make_shared<carla::multigpu::Router>(SecondaryPort, ClientIP);  
+    SecondaryServer->SetCallbacks();  //this is where the weak primary ptr objects of secondary servers originates from
     BindActions();
   }
 

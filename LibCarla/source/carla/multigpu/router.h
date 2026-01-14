@@ -64,9 +64,16 @@ namespace multigpu {
 
     std::weak_ptr<Primary> GetNextServer();
 
+
+    std::string GetClientIP() const {
+      return _client_ip;
+    }
+
+    std::string GetClientIPFromSession(std::weak_ptr<Primary> server);
+
   private:
-    void ConnectSession(std::shared_ptr<Primary> session);
-    void DisconnectSession(std::shared_ptr<Primary> session);
+    void ConnectSession(std::shared_ptr<Primary> session, std::string client_ip);
+    void DisconnectSession(std::shared_ptr<Primary> session, std::string client_ip);
     void ClearSessions();
 
     // mutex and thread pool must be at the beginning to be destroyed last
@@ -82,6 +89,8 @@ namespace multigpu {
 
     uint16_t                               _port;
     std::string                            _client_ip;
+
+    std::vector<std::string>                 _connected_client_ips;
   };
 
 } // namespace multigpu
