@@ -58,7 +58,7 @@ namespace multigpu {
       return _client_ip;
     }
 
-    SecondaryCommands &GetCommander() {
+    SecondaryCommands &GetCommander() { //returns primary server
       return _commander;
     }
 

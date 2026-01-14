@@ -6,7 +6,6 @@ USER carla
 WORKDIR /home/carla
 
 
-
 RUN cd /home/carla/carla && \
   make CarlaUE4Editor 
 

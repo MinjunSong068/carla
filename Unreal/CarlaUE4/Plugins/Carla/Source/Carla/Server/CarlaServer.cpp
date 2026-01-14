@@ -825,8 +825,10 @@ void FCarlaServer::FPimpl::BindActions()
 
     if (SecondaryServer->HasClientsConnected() && !ForceInPrimary)
     {
+      //"SecondaryServer" is a shared pointer to router object
       // multi-gpu
       UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *Desc);
+
       return SecondaryServer->GetCommander().GetToken(sensor_id);
     }
     else

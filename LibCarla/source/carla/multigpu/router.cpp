@@ -31,6 +31,19 @@ Router::Router(uint16_t port) :
 
   _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port);
   _listener = std::make_shared<carla::multigpu::Listener>(_pool.io_context(), _endpoint);
+
+  _client_ip = "0.0.0.0";
+  _port = port;
+}
+
+Router::Router(uint16_t port, std::string client_ip) :
+  _next(0) {
+
+  _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port);
+  _listener = std::make_shared<carla::multigpu::Listener>(_pool.io_context(), _endpoint);
+
+  _client_ip = client_ip;
+  _port = port;
 }
 
 void Router::SetCallbacks() {

@@ -37,6 +37,9 @@ namespace multigpu {
 
     Router(void);
     explicit Router(uint16_t port);
+
+    explicit Router(uint16_t port, std::string client_ip);
+
     ~Router();
 
     void Write(MultiGPUCommand id, Buffer &&buffer);
@@ -76,6 +79,9 @@ namespace multigpu {
     std::unordered_map<Primary *, std::shared_ptr<std::promise<SessionInfo>>> _promises;
     PrimaryCommands                         _commander;
     std::function<void(void)>               _callback;
+
+    uint16_t                               _port;
+    std::string                            _client_ip;
   };
 
 } // namespace multigpu
