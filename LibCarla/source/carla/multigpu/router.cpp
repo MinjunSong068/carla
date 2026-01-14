@@ -120,7 +120,7 @@ void Router::DisconnectSession(std::shared_ptr<Primary> session, std::string cli
   for (auto it = _connected_client_ips.begin(); it != _connected_client_ips.end(); ++it) {
     if (*it == client_ip) {
       _connected_client_ips.erase(it);
-      return 
+      return;
     }
   }
 
