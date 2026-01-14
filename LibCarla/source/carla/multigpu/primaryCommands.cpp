@@ -110,9 +110,9 @@ bool PrimaryCommands::SendIsEnabledForROS(stream_id sensor_id) {
   }
 }
 
-token_type PrimaryCommands::GetToken(stream_id sensor_id) {
+token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsigned int (not a structure or union)
   // search if the sensor has been activated in any secondary server
-  auto it = _tokens.find(sensor_id);
+  auto it = _tokens.find(sensor_id);    //gets relevant token relative to stream_id
   if (it != _tokens.end()) {
     // return already activated sensor token
     log_debug("Using token from already activated sensor: ", it->second.get_stream_id(), ", ", it->second.get_port());
@@ -120,13 +120,18 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) {
   }
   else {
     // enable the sensor on one secondary server
-    auto server = _router->GetNextServer();
+    auto server = _router->GetNextServer(); //multigpu::primary object
+    //get_address is from token.cpp
 
-    while(sensor_id.get_address().to_string() != server.GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
-      auto server = _router->GetNextServer();
+    while(it.get_address().to_string() != server.GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
+      server = _router->GetNextServer();
     }
 
-    auto token = SendGetToken(sensor_id);
+    // while(sensor_id.get_address().to_string() != server.GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
+    //   server = _router->GetNextServer();
+    // }
+
+    auto token = SendGetToken(sensor_id); //send the token (right to activate the sensor) to the chosen secondary server
     // add to the maps
     _tokens[sensor_id] = token;
     _servers[sensor_id] = server;
@@ -134,7 +139,6 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) {
     return token;
   }
 }
-
 void PrimaryCommands::EnableForROS(stream_id sensor_id) {
   auto it = _servers.find(sensor_id);
   if (it != _servers.end()) {
