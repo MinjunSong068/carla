@@ -140,17 +140,20 @@ fi
 # -- Download Houdini Plugin for Unreal Engine ---------------------------------
 # ==============================================================================
 
-HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
-HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
-HOUDINI_PLUGIN_COMMIT=55b6a16cdf274389687fce3019b33e3b6e92a914
-HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
-if [[ ! -d ${HOUDINI_PLUGIN_PATH} ]] ; then
-  git clone ${HOUDINI_PLUGIN_REPO} ${HOUDINI_PLUGIN_PATH}
-  pushd ${HOUDINI_PLUGIN_PATH} >/dev/null
-  git checkout ${HOUDINI_PLUGIN_COMMIT}
-  git apply ${HOUDINI_PATCH}
-  popd >/dev/null
-fi
+#Houdini deprecated for Carla
+
+
+# HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
+# HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
+# HOUDINI_PLUGIN_COMMIT=55b6a16cdf274389687fce3019b33e3b6e92a914
+# HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
+# if [[ ! -d ${HOUDINI_PLUGIN_PATH} ]] ; then
+#   git clone ${HOUDINI_PLUGIN_REPO} ${HOUDINI_PLUGIN_PATH}
+#   pushd ${HOUDINI_PLUGIN_PATH} >/dev/null
+#   git checkout ${HOUDINI_PLUGIN_COMMIT}
+#   git apply ${HOUDINI_PATCH}
+#   popd >/dev/null
+# fi
 
 # ==============================================================================
 # -- Build CarlaUE4 ------------------------------------------------------------
