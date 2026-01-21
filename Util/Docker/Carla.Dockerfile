@@ -1,4 +1,6 @@
-FROM carla-prerequisites:latest
+# FROM carla-prerequisites:latest
+
+FROM carla-preq:Minjun
 
 ARG GIT_BRANCH
 
@@ -7,20 +9,25 @@ WORKDIR /home/carla
 
 
 RUN cd /home/carla/carla && \
-  git clone https://bitbucket.org/carla-simulator/carla-content Unreal/CarlaUE4/Content/Carla
-
-RUN make launch
-
-# RUN cd /home/carla/carla && \
-#   make CarlaUE4Editor 
-
-# RUN cd /home/carla/carla && \
-#   make PythonAPI 
+  ./Update.sh
 
 RUN cd /home/carla/carla && \
+  export UE4_ROOT=/home/carla/UE4.26 && \
+  make CarlaUE4Editor 
+
+RUN cd /home/carla/carla && \
+  export UE4_ROOT=/home/carla/UE4.26 && \
+  make PythonAPI 
+
+# RUN cd /home/carla/carla && \
+#   make launch
+
+RUN cd /home/carla/carla && \
+  export UE4_ROOT=/home/carla/UE4.26 && \
   make build.utils
 
 RUN cd /home/carla/carla && \
+  export UE4_ROOT=/home/carla/UE4.26 && \
   make package
 
 WORKDIR /home/carla/carla
