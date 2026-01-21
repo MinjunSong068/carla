@@ -6,6 +6,11 @@ USER carla
 WORKDIR /home/carla
 
 
+RUN cd /home/carla/carla && \
+  git clone https://bitbucket.org/carla-simulator/carla-content Unreal/CarlaUE4/Content/Carla
+
+RUN make launch
+
 # RUN cd /home/carla/carla && \
 #   make CarlaUE4Editor 
 
