@@ -2622,9 +2622,9 @@ FCarlaServer::~FCarlaServer() {
   Stop();
 }
 
-FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort)
+FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string ClientIP)
 {
-  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort);
+  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort, ClientIP);
   StreamingPort = Pimpl->StreamingServer.GetLocalEndpoint().port();
   SecondaryPort = Pimpl->SecondaryServer->GetLocalEndpoint().port();
 
