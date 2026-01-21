@@ -5,11 +5,12 @@ ARG GIT_BRANCH
 USER carla
 WORKDIR /home/carla
 
-RUN cd /home/carla/carla && \
-  make CarlaUE4Editor 
 
-RUN cd /home/carla/carla && \
-  make PythonAPI 
+# RUN cd /home/carla/carla && \
+#   make CarlaUE4Editor 
+
+# RUN cd /home/carla/carla && \
+#   make PythonAPI 
 
 RUN cd /home/carla/carla && \
   make build.utils
