@@ -8,7 +8,7 @@ USER carla
 WORKDIR /home/carla
 
 RUN cd /home/carla/ && \
-  git clone --depth 1 --branch sensorClientColocation https://github.com/MinjunSong068/carla.git && \
+  git clone --depth 1 --branch sensorClientColocation https://@github.com/MinjunSong068/carla.git && \
   cd /home/carla/carla
 
 RUN cd /home/carla/carla && \
