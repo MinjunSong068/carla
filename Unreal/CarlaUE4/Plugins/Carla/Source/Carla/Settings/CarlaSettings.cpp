@@ -79,7 +79,9 @@ static void LoadSettingsFromConfig(
     Settings.PrimaryIP = TCHAR_TO_UTF8(*Tmp);
     ConfigFile.GetInt(S_CARLA_SERVER,    TEXT("PrimaryPort"), Settings.PrimaryPort);
 
-    ConfigFile.GetString(S_CARLA_SERVER, TEXT("ClientIP"), Settings.ClientIP);
+    FString Tmp2;
+    ConfigFile.GetString(S_CARLA_SERVER, TEXT("ClientIP"), Tmp2);
+    Settings.ClientIP = TCHAR_TO_UTF8(*Tmp2);
   }
   ConfigFile.GetBool(S_CARLA_SERVER, TEXT("SynchronousMode"), Settings.bSynchronousMode);
   ConfigFile.GetBool(S_CARLA_SERVER, TEXT("DisableRendering"), Settings.bDisableRendering);
@@ -161,10 +163,10 @@ void UCarlaSettings::LoadSettings()
     {
       ROS2 = true;
     }
-
-    if (FParse::Value(FCommandLine::Get(), TEXT("-client-ip="), Tmp))
+    Fstrubg Tmp2;
+    if (FParse::Value(FCommandLine::Get(), TEXT("-client-ip="), Tmp2))
     {
-      ClientIP = Tmp;
+      ClientIP = CHAR_TO_UTF8(*Tmp2);
     }
   }
 }
