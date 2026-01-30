@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
       USE_UNITY=false
       shift ;;
     --with-houdini )
-      USE_HOUDINI=true;
+      USE_HOUDINI=false;
       shift ;;
     -h | --help )
       echo "$DOC_STRING"
