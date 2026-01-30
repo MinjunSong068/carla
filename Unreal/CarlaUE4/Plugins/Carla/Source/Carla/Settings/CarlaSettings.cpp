@@ -163,10 +163,10 @@ void UCarlaSettings::LoadSettings()
     {
       ROS2 = true;
     }
-    Fstring Tmp2;
+    FString Tmp2;
     if (FParse::Value(FCommandLine::Get(), TEXT("-client-ip="), Tmp2))
     {
-      ClientIP = CHAR_TO_UTF8(*Tmp2);
+      ClientIP = TCHAR_TO_UTF8(*Tmp2);
     }
   }
 }
