@@ -119,6 +119,8 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
     return it->second;
   }
   else {
+
+    log_debug("Token from new sensor: ", it->second.get_address().to_string());
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
 

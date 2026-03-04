@@ -7,9 +7,7 @@ ARG GIT_BRANCH
 USER carla
 WORKDIR /home/carla
 
-RUN cd /home/carla/ && \
-  git clone --depth 1 --branch sensorClientColocation https://@github.com/MinjunSong068/carla.git && \
-  cd /home/carla/carla
+
 
 RUN cd /home/carla/carla && \
   ./Update.sh
@@ -76,3 +74,16 @@ RUN cd /home/carla/carla && \
   make package
 
 WORKDIR /home/carla/carla
+
+USER root
+
+RUN apt-get update ; \
+  apt-get install -y sudo fontconfig
+
+RUN usermod -aG sudo carla \
+    && echo "carla:carla" | chpasswd
+
+COPY --chown=carla:carla . /home/carla
+USER carla
+
+RUN pip3 install pygame-ce numpy
