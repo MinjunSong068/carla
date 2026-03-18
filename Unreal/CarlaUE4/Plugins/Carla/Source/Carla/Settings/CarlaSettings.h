@@ -79,8 +79,8 @@ private:
 public:
 
 
-  //IP of docker container for colocated client 
-  std::string ClientIP = "";
+  //agent route id to allow sensors from
+  std::string RouteID = "";
 
   /// World port to listen for client connections.
   UPROPERTY(Category = "CARLA Server", VisibleAnywhere, meta = (EditCondition = bUseNetworking))

@@ -7,7 +7,9 @@ ARG GIT_BRANCH
 USER carla
 WORKDIR /home/carla
 
-
+RUN cd /home/carla/ && \
+  git clone --depth 1 --branch sensorClientColocation 
+  cd /home/carla/carla
 
 RUN cd /home/carla/carla && \
   ./Update.sh
@@ -55,30 +57,27 @@ WORKDIR /home/carla
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make CarlaUE4Editor 
+  make -j$(nproc) CarlaUE4Editor 
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make PythonAPI 
-
+  make -j$(nproc) PythonAPI 
 # RUN cd /home/carla/carla && \
 #   make launch
 
+RUN cd /home/carla/carla && \
+  export UE4_ROOT=/home/carla/UE4.26 && \
+  make -j$(nproc) build.utils
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make build.utils
-
-RUN cd /home/carla/carla && \
-  export UE4_ROOT=/home/carla/UE4.26 && \
-  make package
-
+  make -j$(nproc) package
 WORKDIR /home/carla/carla
 
 USER root
 
 RUN apt-get update ; \
-  apt-get install -y sudo fontconfig
+  apt-get install -y sudo fontconfig gdb
 
 RUN usermod -aG sudo carla \
     && echo "carla:carla" | chpasswd

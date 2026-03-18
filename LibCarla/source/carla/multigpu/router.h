@@ -38,7 +38,7 @@ namespace multigpu {
     Router(void);
     explicit Router(uint16_t port);
 
-    explicit Router(uint16_t port, std::string client_ip);
+    explicit Router(uint16_t port, std::string route_ID);
 
     ~Router();
 
@@ -64,16 +64,15 @@ namespace multigpu {
 
     std::weak_ptr<Primary> GetNextServer();
 
-
-    std::string GetClientIP() const {
-      return _client_ip;
+    std::string GetRouteID() const {
+      return _route_ID;
     }
 
-    std::string GetClientIPFromSession(std::weak_ptr<Primary> server);
+    std::string GetRouteIDFromSession(std::weak_ptr<Primary> server);
 
   private:
-    void ConnectSession(std::shared_ptr<Primary> session, std::string client_ip);
-    void DisconnectSession(std::shared_ptr<Primary> session, std::string client_ip);
+    void ConnectSession(std::shared_ptr<Primary> session, std::string route_ID);
+    void DisconnectSession(std::shared_ptr<Primary> session, std::string route_ID);
     void ClearSessions();
 
     // mutex and thread pool must be at the beginning to be destroyed last
@@ -88,9 +87,9 @@ namespace multigpu {
     std::function<void(void)>               _callback;
 
     uint16_t                               _port;
-    std::string                            _client_ip;
+    std::string                            _route_ID;
 
-    std::vector<std::string>                 _connected_client_ips;
+    std::vector<std::string>                 _connected_route_ids;
   };
 
 } // namespace multigpu

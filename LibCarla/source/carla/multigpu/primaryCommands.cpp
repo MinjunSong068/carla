@@ -120,6 +120,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
   }
   else {
 
+
     log_debug("Token from new sensor: ", it->second.get_address().to_string());
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
@@ -127,18 +128,20 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
     //router object has a vector of weak_ptr of multigpu primary objects
     //get_address is from token.cpp
 
-    //GetClientIP is from secondary.h
+//lidar_agent.id (give it format to expect)
+    //sensors know what agent ID to expect
+    //janice is modifying sensor ID
+      //expect sensor_tag = id + "_" + sensor_spec["id"] + "_" + route_id   
+        //we just need route id for our sensor
 
-    while(it->second.get_address().to_string() != _router->GetClientIPFromSession(server)) {  //find secondary server with ClientIP matching sensor_id's 
+    Fstring Desc = Episode->GetActorDescriptionFromStream(sensor_id); //sensor description, also contains route_id
+
+    FString Left, route_ID;
+    Desc.Split(TEXT("_"), &Left, &route_ID, ESearchCase::IgnoreCase, ESearchDir::FromEnd)
+
+    while(std::string(TCHAR_TO_UTF8(*route_ID)) != _router->GetRouteIDFromSession(server)) {  //find secondary server with route_ID matching sensor_id's 
       server = _router->GetNextServer();
     }
-
-    //no member named 'get_address' in 'std::__1::__hash_map_iterator<std::__1::__hash_iterator<std::__1::__hash_node<std::__1::__hash_value_type<unsigned int, carla::streaming::detail::token_type>
-    //no member named 'GetClientIP' in 'std::__1::weak_ptr<carla::multigpu::Primary>'
-
-    // while(sensor_id.get_address().to_string() != server.GetClientIP()) {  //find secondary server with ClientIP matching sensor_id's 
-    //   server = _router->GetNextServer();
-    // }
 
     auto token = SendGetToken(sensor_id); //send the token (right to activate the sensor) to the chosen secondary server
     // add to the maps

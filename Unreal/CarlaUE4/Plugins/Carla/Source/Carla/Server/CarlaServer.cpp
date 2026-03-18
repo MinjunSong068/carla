@@ -95,13 +95,13 @@ class FCarlaServer::FPimpl
 {
 public:
 
-  FPimpl(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string ClientIP)
+  FPimpl(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string RouteID)
     : Server(RPCPort),
       StreamingServer(StreamingPort),
       BroadcastStream(StreamingServer.MakeStream())
   {
     // we need to create shared_ptr from the router for some handlers to live
-    SecondaryServer = std::make_shared<carla::multigpu::Router>(SecondaryPort, ClientIP);  
+    SecondaryServer = std::make_shared<carla::multigpu::Router>(SecondaryPort, RouteID);  
     SecondaryServer->SetCallbacks();  //this is where the weak primary ptr objects of secondary servers originates from
     BindActions();
   }
@@ -828,7 +828,6 @@ void FCarlaServer::FPimpl::BindActions()
       //"SecondaryServer" is a shared pointer to router object
       // multi-gpu
       UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *Desc);
-
       return SecondaryServer->GetCommander().GetToken(sensor_id);
     }
     else
@@ -2622,9 +2621,9 @@ FCarlaServer::~FCarlaServer() {
   Stop();
 }
 
-FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string ClientIP)
+FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort, std::string RouteID)
 {
-  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort, ClientIP);
+  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort, RouteID);
   StreamingPort = Pimpl->StreamingServer.GetLocalEndpoint().port();
   SecondaryPort = Pimpl->SecondaryServer->GetLocalEndpoint().port();
 

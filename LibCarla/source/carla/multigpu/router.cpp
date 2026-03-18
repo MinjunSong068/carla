@@ -32,17 +32,17 @@ Router::Router(uint16_t port) :
   _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port);
   _listener = std::make_shared<carla::multigpu::Listener>(_pool.io_context(), _endpoint);
 
-  _client_ip = "0.0.0.0";
+  _route_ID = "0";
   _port = port;
 }
 
-Router::Router(uint16_t port, std::string client_ip) :
+Router::Router(uint16_t port, std::string route_ID) :
   _next(0) {
 
-  _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port); //might have to mess with this later
+  _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port);
   _listener = std::make_shared<carla::multigpu::Listener>(_pool.io_context(), _endpoint);
 
-  _client_ip = client_ip;
+  _route_ID = route_ID;
   _port = port;
 }
 
@@ -53,13 +53,13 @@ void Router::SetCallbacks() {
   carla::multigpu::Listener::callback_function_type on_open = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
-    self->ConnectSession(session, self->GetClientIP());
+    self->ConnectSession(session, self->GetRouteID());
   };
 
   carla::multigpu::Listener::callback_function_type on_close = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
-    self->DisconnectSession(session, self->GetClientIP());
+    self->DisconnectSession(session, self->GetRouteID());
   };
 
   carla::multigpu::Listener::callback_function_type_response on_response =
@@ -96,12 +96,12 @@ boost::asio::ip::tcp::endpoint Router::GetLocalEndpoint() const {
   return _endpoint;
 }
 
-void Router::ConnectSession(std::shared_ptr<Primary> session, std::string client_ip) {
+void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_ID) {
   DEBUG_ASSERT(session != nullptr);
   std::lock_guard<std::mutex> lock(_mutex);
   _sessions.emplace_back(std::move(session));
 
-  _connected_client_ips.push_back(client_ip);
+  _connected_route_ids.push_back(route_ID);
 
   log_info("Connected secondary servers:", _sessions.size());
   // run external callback for new connections
@@ -109,18 +109,19 @@ void Router::ConnectSession(std::shared_ptr<Primary> session, std::string client
     _callback();
 }
 
-void Router::DisconnectSession(std::shared_ptr<Primary> session, std::string client_ip) {
+void Router::DisconnectSession(std::shared_ptr<Primary> session, std::string route_ID) {
   DEBUG_ASSERT(session != nullptr);
   std::lock_guard<std::mutex> lock(_mutex);
   if (_sessions.size() == 0) return;
   _sessions.erase(
       std::remove(_sessions.begin(), _sessions.end(), session),
       _sessions.end());
-  
-  for (auto it = _connected_client_ips.begin(); it != _connected_client_ips.end(); ++it) {
-    if (*it == client_ip) {
-      _connected_client_ips.erase(it);
-      return;
+  }
+
+  for (auto it = _connected_route_ids.begin(); it != _connected_route_ids.end(); ++it) {
+    if (*it == route_ID) {
+      _connected_route_ids.erase(it);
+      break;
     }
   }
 
@@ -221,12 +222,11 @@ std::weak_ptr<Primary> Router::GetNextServer() {
   }
 }
 
+std::string Router::GetRouteIDFromSession(std::weak_ptr<Primary> server) {
 
-std::string Router::GetClientIPFromSession(std::weak_ptr<Primary> server) {
-    
   for (auto it = _sessions.begin(); it != _sessions.end(); ++it) {
     if (*it == server.lock()) {
-      return _connected_client_ips.at(it - _sessions.begin());
+      return _connected_route_ids.at(it - _sessions.begin());
     }
   }
 
