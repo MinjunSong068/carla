@@ -116,7 +116,6 @@ void Router::DisconnectSession(std::shared_ptr<Primary> session, std::string rou
   _sessions.erase(
       std::remove(_sessions.begin(), _sessions.end(), session),
       _sessions.end());
-  }
 
   for (auto it = _connected_route_ids.begin(); it != _connected_route_ids.end(); ++it) {
     if (*it == route_ID) {
@@ -232,6 +231,8 @@ std::string Router::GetRouteIDFromSession(std::weak_ptr<Primary> server) {
 
   return "";
 }
+
+
 
 } // namespace multigpu
 } // namespace carla

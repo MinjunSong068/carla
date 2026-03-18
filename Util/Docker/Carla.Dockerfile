@@ -8,7 +8,6 @@ USER carla
 WORKDIR /home/carla
 
 RUN cd /home/carla/ && \
-  git clone --depth 1 --branch sensorClientColocation 
   cd /home/carla/carla
 
 RUN cd /home/carla/carla && \
@@ -57,21 +56,21 @@ WORKDIR /home/carla
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make -j$(nproc) CarlaUE4Editor 
+  make CarlaUE4Editor 
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make -j$(nproc) PythonAPI 
+  make PythonAPI 
 # RUN cd /home/carla/carla && \
 #   make launch
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make -j$(nproc) build.utils
+  make build.utils
 
 RUN cd /home/carla/carla && \
   export UE4_ROOT=/home/carla/UE4.26 && \
-  make -j$(nproc) package
+  make package
 WORKDIR /home/carla/carla
 
 USER root
