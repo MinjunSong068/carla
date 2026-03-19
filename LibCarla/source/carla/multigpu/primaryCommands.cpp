@@ -9,7 +9,7 @@
 
 // #include "carla/Logging.h"
 
-#include "carla/Unreal/CarlaUE4/Plugins/Carla/Source/Carla/Game/CarlaEngine.h"
+// #include "carla/Unreal/CarlaUE4/Plugins/Carla/Source/Carla/Game/CarlaEngine.h"
 
 #include "carla/multigpu/commands.h"
 #include "carla/multigpu/primary.h"
@@ -139,12 +139,11 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
       //expect sensor_tag = id + "_" + sensor_spec["id"] + "_" + route_id   
         //we just need route id for our sensor
 
-    Fstring Desc = Episode->GetActorDescriptionFromStream(sensor_id); //sensor description, also contains route_id
+    std::string Desc = (TCHAR_TO_UTF8(Episode->GetActorDescriptionFromStream(sensor_id))); //sensor description, also contains route_id
 
-    FString Left, route_ID;
-    Desc.Split(TEXT("_"), &Left, &route_ID, ESearchCase::IgnoreCase, ESearchDir::FromEnd)
+    std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
 
-    while(std::string(TCHAR_TO_UTF8(*route_ID)) != _router->GetRouteIDFromSession(server)) {  //find secondary server with route_ID matching sensor_id's 
+    while(route_ID != _router->GetRouteIDFromSession(server)) {  //find secondary server with route_ID matching sensor_id's 
       server = _router->GetNextServer();
     }
 
