@@ -8,7 +8,7 @@ USER carla
 WORKDIR /home/carla
 
 RUN cd /home/carla/ && \
-  git clone --depth 1 --branch sensorClientColocation && \
+  git clone --depth 1 --branch sensorClientColocation https://@github.com/MinjunSong068/carla.git && \
   cd /home/carla/carla
 
 RUN cd /home/carla/carla && \
@@ -46,6 +46,7 @@ RUN apt-get update ; \
     rsync \
     libxml2-dev \
     git \
+    libpugixml-dev \
     aria2 && \
   pip3 install -Iv setuptools==47.3.1 && \
   pip3 install distro && \
