@@ -6,18 +6,20 @@
 
 #include "CoreMinimal.h"
 
+
 #include "carla/multigpu/primaryCommands.h"
 
 
-#include <compiler/disable-ue4-macros.h>
 // #include "carla/Logging.h"
+
+#include "carla/Unreal/CarlaUE4/Plugins/Carla/Source/Carla/Game/CarlaEngine.h"
+
 #include "carla/multigpu/commands.h"
 #include "carla/multigpu/primary.h"
 #include "carla/multigpu/router.h"
 #include "carla/streaming/detail/tcp/Message.h"
 #include "carla/streaming/detail/Token.h"
 #include "carla/streaming/detail/Types.h"
-#include <compiler/enable-ue4-macros.h>
 
 
 namespace carla {
