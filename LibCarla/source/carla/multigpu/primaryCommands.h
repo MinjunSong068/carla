@@ -52,7 +52,7 @@ class PrimaryCommands {
   private:
 
     // send to one secondary to get the token of a sensor
-    token_type SendGetToken(carla::streaming::detail::stream_id_type sensor_id);
+    token_type SendGetToken(carla::streaming::detail::stream_id_type sensor_id, std::string Desc = "NONE");
 
     // manage ROS enable/disable of sensor
     void SendEnableForROS(stream_id sensor_id);

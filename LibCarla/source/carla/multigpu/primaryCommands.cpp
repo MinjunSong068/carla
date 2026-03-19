@@ -115,7 +115,7 @@ bool PrimaryCommands::SendIsEnabledForROS(stream_id sensor_id) {
   }
 }
 
-token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsigned int (not a structure or union)
+token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //stream_id is unsigned int (not a structure or union)
   // search if the sensor has been activated in any secondary server
   auto it = _tokens.find(sensor_id);    //gets relevant token relative to stream_id
   if (it != _tokens.end()) {
@@ -130,21 +130,17 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) { //stream_id is unsig
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
 
-    //router object has a vector of weak_ptr of multigpu primary objects
-    //get_address is from token.cpp
-
 //lidar_agent.id (give it format to expect)
     //sensors know what agent ID to expect
     //janice is modifying sensor ID
       //expect sensor_tag = id + "_" + sensor_spec["id"] + "_" + route_id   
         //we just need route id for our sensor
 
-    std::string Desc = (TCHAR_TO_UTF8(Episode->GetActorDescriptionFromStream(sensor_id))); //sensor description, also contains route_id
-
-    std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
-
-    while(route_ID != _router->GetRouteIDFromSession(server)) {  //find secondary server with route_ID matching sensor_id's 
-      server = _router->GetNextServer();
+    if(Desc != "NONE") { //place sensor in specified server if route ID is provided
+      std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
+      while(route_ID != _router->GetRouteIDFromSession(server)) { 
+        server = _router->GetNextServer();
+      }
     }
 
     auto token = SendGetToken(sensor_id); //send the token (right to activate the sensor) to the chosen secondary server
