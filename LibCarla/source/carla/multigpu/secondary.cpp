@@ -34,7 +34,7 @@ namespace multigpu {
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
       _route_ID(route_id), 
-      _buffer_pool(std::make_shared<BufferPool>()), 
+      _buffer_pool(std::make_shared<BufferPool>())
       {
 
       _commander.set_callback(callback);
@@ -51,7 +51,7 @@ namespace multigpu {
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
       _route_ID(route_id),
-      _buffer_pool(std::make_shared<BufferPool>()),
+      _buffer_pool(std::make_shared<BufferPool>())
        {
 
     boost::asio::ip::address ip_address = boost::asio::ip::address::from_string(ip);
