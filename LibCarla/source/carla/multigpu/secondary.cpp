@@ -33,7 +33,7 @@ namespace multigpu {
       _endpoint(ep),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _route_ID(route_id) 
+      _route_ID(route_id), 
       _buffer_pool(std::make_shared<BufferPool>()), 
       {
 
@@ -50,7 +50,7 @@ namespace multigpu {
       _socket(_pool.io_context()),
       _strand(_pool.io_context()),
       _connection_timer(_pool.io_context()),
-      _route_ID(route_id)
+      _route_ID(route_id),
       _buffer_pool(std::make_shared<BufferPool>()),
        {
 
