@@ -124,9 +124,6 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     return it->second;
   }
   else {
-
-
-    log_debug("Token from new sensor: ", it->second.get_address().to_string());
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
 
@@ -139,7 +136,12 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     if(Desc != "NONE") { //place sensor in specified server if route ID is provided
       std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
       while(route_ID != _router->GetRouteIDFromSession(server)) { 
-        server = _router->GetNextServer();
+        if(_router->GetRouteIDFromSession(server) == "NONE") {  //non dedicated rendering server
+          break;
+        }
+        else {
+          server = _router->GetNextServer(); //keep iterating until dedicated rendering server is found
+        }
       }
     }
 
