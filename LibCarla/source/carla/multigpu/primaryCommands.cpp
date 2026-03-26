@@ -126,6 +126,9 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
   else {
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
+    log_error("Current server route ID: ", _router->GetRouteIDFromSession(server));
+    log_error("Sensor description: ", Desc);
+
     log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
     log_debug("Sensor description: ", Desc);
 
@@ -140,13 +143,15 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
       while(route_ID != _router->GetRouteIDFromSession(server)) { 
         log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
         if(_router->GetRouteIDFromSession(server) == "NONE") {  //non dedicated rendering server
-          break;
+          goto pass;
         }
         else {
           server = _router->GetNextServer(); //keep iterating until dedicated rendering server is found
         }
       }
     }
+
+    pass
 
     auto token = SendGetToken(sensor_id); //send the token (right to activate the sensor) to the chosen secondary server
     // add to the maps
