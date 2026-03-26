@@ -151,7 +151,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
       }
     }
 
-    pass
+    pass:
 
     auto token = SendGetToken(sensor_id); //send the token (right to activate the sensor) to the chosen secondary server
     // add to the maps
