@@ -126,6 +126,8 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
   else {
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
+    log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
+    log_debug("Sensor description: ", Desc);
 
 //lidar_agent.id (give it format to expect)
     //sensors know what agent ID to expect
@@ -136,6 +138,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     if(Desc != "NONE") { //place sensor in specified server if route ID is provided
       std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
       while(route_ID != _router->GetRouteIDFromSession(server)) { 
+        log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
         if(_router->GetRouteIDFromSession(server) == "NONE") {  //non dedicated rendering server
           break;
         }
