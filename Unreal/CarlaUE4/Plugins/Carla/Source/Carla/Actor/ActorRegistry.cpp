@@ -270,7 +270,7 @@ std::string FActorRegistry::GetRoleNameFromStream(carla::streaming::detail::stre
         {
             // Access actor info
             const FActorInfo *Info = Item.Value->GetActorInfo();
-            if (Info == nullptr) return FString("");
+            if (Info == nullptr) return "";
 
             // Look for "role_name" in the actor description attributes
             const auto &Attrs = Info->Description.Variations;

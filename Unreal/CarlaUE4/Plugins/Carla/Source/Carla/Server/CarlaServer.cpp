@@ -832,7 +832,6 @@ void FCarlaServer::FPimpl::BindActions()
       //Desc is sensor blueprint description, does not have routeID created from python end
       //needs FActorDescription access or something akin to it
       UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *Desc);
-      UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *RoleName);
 
       //access actor variations, look for "role_name", via the set_attribute function on the python client end, route ID can be appended to the end and worked with
       //access this via GetActorInfo()->Description.Variations in the FCarlaActor class, and look for the "role_name" key
