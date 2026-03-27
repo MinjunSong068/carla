@@ -68,7 +68,7 @@ namespace multigpu {
       return _route_ID;
     }
 
-    std::string GetRouteIDFromSession(std::weak_ptr<Primary> server);
+    std::string GetRouteIDFromSession();
 
   private:
     void ConnectSession(std::shared_ptr<Primary> session, std::string route_ID);

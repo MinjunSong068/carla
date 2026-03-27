@@ -49,7 +49,7 @@ Router::Router(uint16_t port, std::string route_ID) :
 void Router::SetCallbacks(std::string route_ID) {
   // prepare server
   std::weak_ptr<Router> weak = shared_from_this();
-
+  log_error("Setting callbacks for route ID: ", route_ID);
   carla::multigpu::Listener::callback_function_type on_open = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
@@ -104,7 +104,8 @@ void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_
   std::lock_guard<std::mutex> lock(_mutex);
   _sessions.emplace_back(std::move(session));
 
-  _connected_route_ids.push_back(route_ID);
+  _connected_route_ids.emplace_back(route_ID);
+
 
   log_info("Connected secondary servers:", _sessions.size());
   log_error("Connected secondary servers:", _sessions.size());
@@ -175,6 +176,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
   // write to the next server only
   std::lock_guard<std::mutex> lock(_mutex);
   if (_next >= _sessions.size()) {
+    std::cout << "Resetting next to 0" << std::endl;
     _next = 0;
   }
   if (_next < _sessions.size()) {
@@ -183,6 +185,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
     if (s != nullptr) {
       _promises[s.get()] = response;
       std::cout << "Updated promise into map: " << _promises.size() << std::endl;
+      std::cout << "Writing message to session " << _next << std::endl;
       s->Write(message);
     }
   }
@@ -218,23 +221,26 @@ std::weak_ptr<Primary> Router::GetNextServer() {
   std::lock_guard<std::mutex> lock(_mutex);
   if (_next >= _sessions.size()) {
     _next = 0;
+    std::cout << "Resetting next to 0" << std::endl;
   }
   if (_next < _sessions.size()) {
+    std::cout << "Getting session " << _next << std::endl;
     return std::weak_ptr<Primary>(_sessions[_next]);
   } else {
+    std::cout << "No sessions available" << std::endl;
     return std::weak_ptr<Primary>();
   }
 }
 
-std::string Router::GetRouteIDFromSession(std::weak_ptr<Primary> server) {
+std::string Router::GetRouteIDFromSession() {
+  return _connected_route_ids.at(_next);
+  // for (auto it = _sessions.begin(); it != _sessions.end(); ++it) {
+  //   if (*it == server.lock()) {
+  //     return _connected_route_ids.at(it - _sessions.begin());
+  //   }
+  // }
 
-  for (auto it = _sessions.begin(); it != _sessions.end(); ++it) {
-    if (*it == server.lock()) {
-      return _connected_route_ids.at(it - _sessions.begin());
-    }
-  }
-
-  return "";
+  // return "";
 }
 
 

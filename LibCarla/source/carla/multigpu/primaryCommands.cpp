@@ -126,10 +126,10 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
   else {
     // enable the sensor on one secondary server
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
-    log_error("Current server route ID: ", _router->GetRouteIDFromSession(server));
+    log_error("Current server route ID: ", _router->GetRouteIDFromSession());
     log_error("Sensor description: ", Desc);
 
-    log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
+    log_debug("Current server route ID: ", _router->GetRouteIDFromSession());
     log_debug("Sensor description: ", Desc);
 
 //lidar_agent.id (give it format to expect)
@@ -137,20 +137,23 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     //janice is modifying sensor ID
       //expect sensor_tag = id + "_" + sensor_spec["id"] + "_" + route_id   
         //we just need route id for our sensor
+        //python side needs to put sensor_tag into role_name for cpp server end to access
 
     if(Desc != "NONE") { //place sensor in specified server if route ID is provided
       std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
-      while(route_ID != _router->GetRouteIDFromSession(server)) { 
+      while(route_ID != _router->GetRouteIDFromSession()) { 
 
-        log_error("Current server route ID: ", _router->GetRouteIDFromSession(server));
+        log_error("Current server route ID: ", _router->GetRouteIDFromSession());
         log_error("Sensor description: ", Desc);
+        log_error("Sensor route_ID: ", route_ID);
 
-        if(_router->GetRouteIDFromSession(server) == "NONE") {  //non dedicated rendering server
+        if(_router->GetRouteIDFromSession() == "NONE") {  //non dedicated rendering server
+          log_error("Attaching to non dedicated rendering server");
           goto pass;
         }
         else {
           server = _router->GetNextServer(); //keep iterating until dedicated rendering server is found
-          log_error("Next server route ID: ", _router->GetRouteIDFromSession(server));
+          log_error("Next server route ID: ", _router->GetRouteIDFromSession());
         }
       }
     }
