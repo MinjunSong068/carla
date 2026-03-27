@@ -30,6 +30,8 @@
 #include <compiler/enable-ue4-macros.h>
 
 #include "CarlaEpisode.generated.h"
+#include <string>
+
 
 /// A simulation episode.
 ///
@@ -196,7 +198,7 @@ public:
   /// Get the role name of the Carla actor (sensor) using specific stream id.
   ///
   /// If the actor is not found or the role name is not set, returns an empty string
-  FString GetRoleNameFromStream(carla::streaming::detail::stream_id_type StreamId)
+  std::string GetRoleNameFromStream(carla::streaming::detail::stream_id_type StreamId)
   {
     return ActorDispatcher->GetActorRegistry().GetRoleNameFromStream(StreamId);
   }

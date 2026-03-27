@@ -818,7 +818,7 @@ void FCarlaServer::FPimpl::BindActions()
 
     // collision sensor always in primary server in multi-gpu
     FString Desc = Episode->GetActorDescriptionFromStream(sensor_id);
-    Fstring RoleName = Episode->GetActorRoleNameFromStream(sensor_id);
+    std::string RoleName = Episode->GetRoleNameFromStream(sensor_id);
     if (Desc == "" || Desc == "sensor.other.collision")
     {
       ForceInPrimary = true;
@@ -837,7 +837,7 @@ void FCarlaServer::FPimpl::BindActions()
       //access actor variations, look for "role_name", via the set_attribute function on the python client end, route ID can be appended to the end and worked with
       //access this via GetActorInfo()->Description.Variations in the FCarlaActor class, and look for the "role_name" key
 
-      return SecondaryServer->GetCommander().GetToken(sensor_id, TCHAR_TO_UTF8(*RoleName)); //send sensor ID and corresponding description 
+      return SecondaryServer->GetCommander().GetToken(sensor_id, RoleName); //send sensor ID and corresponding description 
     }
     else
     {

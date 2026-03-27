@@ -255,7 +255,7 @@ FString FActorRegistry::GetDescriptionFromStream(carla::streaming::detail::strea
   return FString("");
 }
 
-FString FActorRegistry::GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id)
+std::string FActorRegistry::GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id)
 {
     // Loop over all registered actors
     for (auto &Item : ActorDatabase)
@@ -274,18 +274,17 @@ FString FActorRegistry::GetRoleNameFromStream(carla::streaming::detail::stream_i
 
             // Look for "role_name" in the actor description attributes
             const auto &Attrs = Info->Description.Variations;
-            if (const FString* Role = Attrs.Find("role_name"))
+            for (const auto &Attr : Info->Description.Variations)
             {
-                return *Role;
+              if (Attr.Key == "role_name") {
+                std::string value = std::string(TCHAR_TO_UTF8(*Attr.Value.Value));
+                return value;
+              }
             }
-            else
-            {
-                // Attribute not set
-                return FString("");
-            }
+          return "";
         }
     }
 
     // StreamId not found
-    return FString("");
+    return "";
 }

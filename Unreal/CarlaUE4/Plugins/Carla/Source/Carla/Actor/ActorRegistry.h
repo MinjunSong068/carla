@@ -15,6 +15,7 @@
 #include <compiler/enable-ue4-macros.h>
 
 #include <unordered_map>
+#include <string>
 
 /// A registry of all the Carla actors.
 class FActorRegistry
@@ -92,7 +93,7 @@ public:
 
   FString GetDescriptionFromStream(carla::streaming::detail::stream_id_type Id);
 
-  Fstring GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id);
+  std::string GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id);
 
   void PutActorToSleep(IdType Id, UCarlaEpisode* CarlaEpisode);
 
