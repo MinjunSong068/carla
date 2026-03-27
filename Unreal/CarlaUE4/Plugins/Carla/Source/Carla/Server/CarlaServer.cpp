@@ -102,7 +102,7 @@ public:
   {
     // we need to create shared_ptr from the router for some handlers to live
     SecondaryServer = std::make_shared<carla::multigpu::Router>(SecondaryPort, RouteID);  
-    SecondaryServer->SetCallbacks();  //this is where the weak primary ptr objects of secondary servers originates from
+    SecondaryServer->SetCallbacks(RouteID);  //this is where the weak primary ptr objects of secondary servers originates from
     BindActions();
   }
 
@@ -818,6 +818,7 @@ void FCarlaServer::FPimpl::BindActions()
 
     // collision sensor always in primary server in multi-gpu
     FString Desc = Episode->GetActorDescriptionFromStream(sensor_id);
+    Fstring RoleName = Episode->GetActorRoleNameFromStream(sensor_id);
     if (Desc == "" || Desc == "sensor.other.collision")
     {
       ForceInPrimary = true;
@@ -827,8 +828,17 @@ void FCarlaServer::FPimpl::BindActions()
     {
       //"SecondaryServer" is a shared pointer to router object
       // multi-gpu
+
+      //Desc is sensor blueprint description, does not have routeID created from python end
+      //needs FActorDescription access or something akin to it
       UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *Desc);
-      return SecondaryServer->GetCommander().GetToken(sensor_id, TCHAR_TO_UTF8(*Desc)); //send sensor ID and corresponding description 
+      UE_LOG(LogCarla, Log, TEXT("Sensor %d '%s' created in secondary server"), sensor_id, *RoleName);
+
+      //access actor variations, look for "role_name", via the set_attribute function on the python client end, route ID can be appended to the end and worked with
+      //access this via GetActorInfo()->Description.Variations in the FCarlaActor class, and look for the "role_name" key
+      Fstring pythonClientData = Episode
+
+      return SecondaryServer->GetCommander().GetToken(sensor_id, TCHAR_TO_UTF8(*RoleName)); //send sensor ID and corresponding description 
     }
     else
     {

@@ -47,7 +47,7 @@ namespace multigpu {
     std::future<SessionInfo> WriteToOne(std::weak_ptr<Primary> server, MultiGPUCommand id, Buffer &&buffer);
     void Stop();
 
-    void SetCallbacks();
+    void SetCallbacks(std::string route_ID);
     void SetNewConnectionCallback(std::function<void(void)>);
 
     void AsyncRun(size_t worker_threads);

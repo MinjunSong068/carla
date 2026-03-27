@@ -254,3 +254,38 @@ FString FActorRegistry::GetDescriptionFromStream(carla::streaming::detail::strea
   }
   return FString("");
 }
+
+FString FActorRegistry::GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id)
+{
+    // Loop over all registered actors
+    for (auto &Item : ActorDatabase)
+    {
+        // Only interested in sensors
+        ASensor *Sensor = Cast<ASensor>(Item.Value->GetActor());
+        if (Sensor == nullptr) continue;
+
+        // Extract the token from the sensor and compare StreamId
+        carla::streaming::detail::token_type token(Sensor->GetToken());
+        if (token.get_stream_id() == Id)
+        {
+            // Access actor info
+            const FActorInfo *Info = Item.Value->GetActorInfo();
+            if (Info == nullptr) return FString("");
+
+            // Look for "role_name" in the actor description attributes
+            const auto &Attrs = Info->Description.Variations;
+            if (const FString* Role = Attrs.Find("role_name"))
+            {
+                return *Role;
+            }
+            else
+            {
+                // Attribute not set
+                return FString("");
+            }
+        }
+    }
+
+    // StreamId not found
+    return FString("");
+}

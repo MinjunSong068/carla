@@ -141,12 +141,16 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     if(Desc != "NONE") { //place sensor in specified server if route ID is provided
       std::string route_ID = Desc.substr(Desc.find_last_of("_") + 1); //get route_ID from description (after last "_")
       while(route_ID != _router->GetRouteIDFromSession(server)) { 
-        log_debug("Current server route ID: ", _router->GetRouteIDFromSession(server));
+
+        log_error("Current server route ID: ", _router->GetRouteIDFromSession(server));
+        log_error("Sensor description: ", Desc);
+
         if(_router->GetRouteIDFromSession(server) == "NONE") {  //non dedicated rendering server
           goto pass;
         }
         else {
           server = _router->GetNextServer(); //keep iterating until dedicated rendering server is found
+          log_error("Next server route ID: ", _router->GetRouteIDFromSession(server));
         }
       }
     }

@@ -32,7 +32,7 @@ Router::Router(uint16_t port) :
   _endpoint = boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("0.0.0.0"), port);
   _listener = std::make_shared<carla::multigpu::Listener>(_pool.io_context(), _endpoint);
 
-  _route_ID = "0";
+  _route_ID = "NONE";
   _port = port;
 }
 
@@ -46,20 +46,20 @@ Router::Router(uint16_t port, std::string route_ID) :
   _port = port;
 }
 
-void Router::SetCallbacks() {
+void Router::SetCallbacks(std::string route_ID) {
   // prepare server
   std::weak_ptr<Router> weak = shared_from_this();
 
   carla::multigpu::Listener::callback_function_type on_open = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
-    self->ConnectSession(session, self->GetRouteID());
+    self->ConnectSession(session, route_ID);
   };
 
   carla::multigpu::Listener::callback_function_type on_close = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
-    self->DisconnectSession(session, self->GetRouteID());
+    self->DisconnectSession(session, route_ID);
   };
 
   carla::multigpu::Listener::callback_function_type_response on_response =
@@ -70,10 +70,12 @@ void Router::SetCallbacks() {
       auto prom =self-> _promises.find(session.get());
       if (prom != self->_promises.end()) {
         log_info("Got data from secondary (with promise): ", buffer.size());
+        log_error("Got data from secondary (with promise): ", buffer.size());
         prom->second->set_value({session, std::move(buffer)});
         self->_promises.erase(prom);
       } else {
         log_info("Got data from secondary (without promise): ", buffer.size());
+        log_error("Got data from secondary (without promise): ", buffer.size());
       }
     };
 
@@ -81,6 +83,7 @@ void Router::SetCallbacks() {
 
   _listener->Listen(on_open, on_close, on_response);
   log_info("Listening at ", _endpoint);
+  log_error("Listening at ", _endpoint);
 }
 
 void Router::SetNewConnectionCallback(std::function<void(void)> func)
@@ -104,6 +107,7 @@ void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_
   _connected_route_ids.push_back(route_ID);
 
   log_info("Connected secondary servers:", _sessions.size());
+  log_error("Connected secondary servers:", _sessions.size());
   // run external callback for new connections
   if (_callback)
     _callback();
@@ -125,6 +129,7 @@ void Router::DisconnectSession(std::shared_ptr<Primary> session, std::string rou
   }
 
   log_info("Connected secondary servers:", _sessions.size());
+  log_error("Connected secondary servers:", _sessions.size());
 }
 
 void Router::ClearSessions() {

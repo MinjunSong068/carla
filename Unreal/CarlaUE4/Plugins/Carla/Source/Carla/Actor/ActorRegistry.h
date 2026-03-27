@@ -92,6 +92,8 @@ public:
 
   FString GetDescriptionFromStream(carla::streaming::detail::stream_id_type Id);
 
+  Fstring GetRoleNameFromStream(carla::streaming::detail::stream_id_type Id);
+
   void PutActorToSleep(IdType Id, UCarlaEpisode* CarlaEpisode);
 
   void WakeActorUp(IdType Id, UCarlaEpisode* CarlaEpisode);
