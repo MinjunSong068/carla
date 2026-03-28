@@ -138,6 +138,8 @@ namespace multigpu {
   }
 
   void Secondary::Write(std::shared_ptr<const carla::streaming::detail::tcp::Message> message) {
+    log_error("secondary server: sending message from: ", _route_ID);
+
     DEBUG_ASSERT(message != nullptr);
     DEBUG_ASSERT(!message->empty());
     std::weak_ptr<Secondary> weak = shared_from_this();
@@ -162,9 +164,15 @@ namespace multigpu {
           message->GetBufferSequence(),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+    double now = std::chrono::duration<double>(
+    std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+    TimestampLogger::GetInstance().Log("Secondary sent message", now, 0)
   }
 
   void Secondary::Write(Buffer buffer) {
+    log_error("secondary server: sending buffer from: ", _route_ID);
+
     auto view_data = carla::BufferView::CreateFrom(std::move(buffer));
     auto message = Secondary::MakeMessage(view_data);
 
@@ -192,9 +200,17 @@ namespace multigpu {
           message->GetBufferSequence(),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+
+
+    double now = std::chrono::duration<double>(
+    std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+    TimestampLogger::GetInstance().Log("Secondary sent buffer", now, 0);
   }
 
   void Secondary::Write(std::string text) {
+    log_error("secondary server: sending text from: ", _route_ID, ": ", text);
+
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [=]() {
       auto self = weak.lock();
@@ -225,9 +241,14 @@ namespace multigpu {
           boost::asio::buffer(text.c_str(), text.size()),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+    double now = std::chrono::duration<double>(
+    std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+    TimestampLogger::GetInstance().Log("Secondary sent text", now, 0)
   }
 
   void Secondary::ReadData() {
+    log_error("secondary server: starting to read data, working for route ", _route_ID);
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [weak]() {
       auto self = weak.lock();

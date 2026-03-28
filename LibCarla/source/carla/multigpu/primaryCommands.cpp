@@ -18,6 +18,8 @@
 #include "carla/streaming/detail/Token.h"
 #include "carla/streaming/detail/Types.h"
 
+#include "TimestampLogger.h"
+
 
 namespace carla {
 namespace multigpu {

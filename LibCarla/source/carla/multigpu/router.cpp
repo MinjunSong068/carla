@@ -9,6 +9,8 @@
 #include "carla/multigpu/listener.h"
 #include "carla/streaming/EndPoint.h"
 
+#include "TimestampLogger.h"
+
 namespace carla {
 namespace multigpu {
 
@@ -73,6 +75,12 @@ void Router::SetCallbacks(std::string route_ID) {
         log_error("Got data from secondary (with promise): ", buffer.size());
         prom->second->set_value({session, std::move(buffer)});
         self->_promises.erase(prom);
+
+        double now = std::chrono::duration<double>(
+        std::chrono::system_clock::now().time_since_epoch()
+        ).count();
+        TimestampLogger::GetInstance().Log("Data from secondary with promise", now, 0);
+
       } else {
         log_info("Got data from secondary (without promise): ", buffer.size());
         log_error("Got data from secondary (without promise): ", buffer.size());
@@ -187,11 +195,20 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
       _promises[s.get()] = response;
       std::cout << "Updated promise into map: " << _promises.size() << std::endl;
       std::cout << "Writing message to session " << _next << std::endl;
+
+      //time logging for uploads to sensors ready
+
       s->Write(message);
     }
   }
   std::cout << "incrementing next from " << _next << std::endl;
   ++_next;
+
+    double now = std::chrono::duration<double>(
+        std::chrono::system_clock::now().time_since_epoch()
+      ).count();
+    TimestampLogger::GetInstance().Log("router write to next done", now, 0);
+
   return response->get_future();
 }
 
@@ -235,7 +252,7 @@ std::weak_ptr<Primary> Router::GetNextServer() {
 }
 
 std::string Router::GetRouteIDFromSession() {
-  std::cout << "Getting route ID " << _connected_route_ids.size() << std::endl;
+  std::cout << "Getting route ID from total available sessions: " << _connected_route_ids.size() << std::endl;
   if (_connected_route_ids.at(_next) == "") {
     std::cout << "Route ID is empty, returning index as string: " << _next << std::endl;
     return std::to_string(_next);
