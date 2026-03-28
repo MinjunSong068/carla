@@ -168,7 +168,7 @@ namespace multigpu {
     double now = std::chrono::duration<double>(
     std::chrono::system_clock::now().time_since_epoch()
     ).count();
-    TimestampLogger::GetInstance().Log("Secondary sent message", now, 0)
+    TimestampLogger::GetInstance().Log("Secondary sent message", now, 0);
   }
 
   void Secondary::Write(Buffer buffer) {
@@ -245,7 +245,7 @@ namespace multigpu {
     double now = std::chrono::duration<double>(
     std::chrono::system_clock::now().time_since_epoch()
     ).count();
-    TimestampLogger::GetInstance().Log("Secondary sent text", now, 0)
+    TimestampLogger::GetInstance().Log("Secondary sent text", now, 0);
   }
 
   void Secondary::ReadData() {
