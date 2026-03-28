@@ -147,7 +147,7 @@ namespace multigpu {
 
           self->ReadData();
 
-          double now = std::chrono::duration<double>(
+          now = std::chrono::duration<double>(
           std::chrono::system_clock::now().time_since_epoch()
           ).count();
           TimestampLogger::GetInstance().Log("Got data on listener [DONE]", now, 0);
