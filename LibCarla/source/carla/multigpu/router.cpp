@@ -109,6 +109,7 @@ void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_
 
   log_info("Connected secondary servers:", _sessions.size());
   log_error("Connected secondary servers:", _sessions.size());
+  log_error("Added route ID: ", route_ID);
   // run external callback for new connections
   if (_callback)
     _callback();
@@ -189,6 +190,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
       s->Write(message);
     }
   }
+  std::cout << "incrementing next from " << _next << std::endl;
   ++_next;
   return response->get_future();
 }
@@ -233,6 +235,12 @@ std::weak_ptr<Primary> Router::GetNextServer() {
 }
 
 std::string Router::GetRouteIDFromSession() {
+  std::cout << "Getting route ID " << _connected_route_ids.size() << std::endl;
+  if (_connected_route_ids.at(_next) == "") {
+    std::cout << "Route ID is empty, returning index as string: " << _next << std::endl;
+    return std::to_string(_next);
+  }
+  std::cout << "Route ID is: " << _connected_route_ids.at(_next) << std::endl;
   return _connected_route_ids.at(_next);
   // for (auto it = _sessions.begin(); it != _sessions.end(); ++it) {
   //   if (*it == server.lock()) {

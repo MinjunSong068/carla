@@ -48,6 +48,7 @@ void PrimaryCommands::SendLoadMap(std::string map) {
 // send to who the router wants the request for a token
 token_type PrimaryCommands::SendGetToken(stream_id sensor_id) {
   log_info("asking for a token");
+  log_error("asking for a token");
   carla::Buffer buf((carla::Buffer::value_type *) &sensor_id,
                     (size_t) sizeof(stream_id));
   auto fut = _router->WriteToNext(MultiGPUCommand::GET_TOKEN, std::move(buf));
@@ -55,6 +56,7 @@ token_type PrimaryCommands::SendGetToken(stream_id sensor_id) {
   auto response = fut.get();
   token_type new_token(*reinterpret_cast<carla::streaming::detail::token_data *>(response.buffer.data()));
   log_info("got a token: ", new_token.get_stream_id(), ", ", new_token.get_port());
+  log_error("got a token: ", new_token.get_stream_id(), ", ", new_token.get_port());
   return new_token;
 }
 
