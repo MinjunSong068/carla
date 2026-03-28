@@ -6,6 +6,7 @@
 
 #include "carla/multigpu/incomingMessage.h"
 #include "carla/multigpu/secondary.h"
+#include "carla/multigpu/TimestampLogger.h"
 
 #include "carla/BufferPool.h"
 #include "carla/Debug.h"

@@ -19,7 +19,7 @@
 #include <atomic>
 #include <thread>
 
-#include "TimestampLogger.h"
+#include "carla/multigpu/TimestampLogger.h"
 
 namespace carla {
 namespace multigpu {

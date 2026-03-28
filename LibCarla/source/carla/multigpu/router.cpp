@@ -9,7 +9,7 @@
 #include "carla/multigpu/listener.h"
 #include "carla/streaming/EndPoint.h"
 
-#include "TimestampLogger.h"
+#include "carla/multigpu/TimestampLogger.h"
 
 namespace carla {
 namespace multigpu {
