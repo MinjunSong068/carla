@@ -125,6 +125,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
   if (it != _tokens.end()) {
     // return already activated sensor token
     log_debug("Using token from already activated sensor: ", it->second.get_stream_id(), ", ", it->second.get_port());
+    log_error("Using token from already activated sensor: ", it->second.get_stream_id(), ", ", it->second.get_port());
     return it->second;
   }
   else {
@@ -132,6 +133,10 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     auto server = _router->GetNextServer(); //weak_ptr multigpu::primary object
     log_error("Current server route ID: ", _router->GetRouteIDFromSession());
     log_error("Sensor description: ", Desc);
+    
+    if(Desc != "NONE"){
+      log_error("Route ID: ", Desc.substr(Desc.find_last_of("_") + 1)); //get route_ID from description (after last "_")
+    }
 
     log_debug("Current server route ID: ", _router->GetRouteIDFromSession());
     log_debug("Sensor description: ", Desc);
@@ -169,6 +174,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     _tokens[sensor_id] = token;
     _servers[sensor_id] = server;
     log_debug("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
+    log_error("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
     return token;
   }
 }

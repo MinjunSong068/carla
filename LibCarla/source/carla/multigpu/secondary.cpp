@@ -101,6 +101,7 @@ namespace multigpu {
         self->_socket.set_option(boost::asio::ip::tcp::no_delay(true));
 
         log_info("secondary server: connected to ", self->_endpoint);
+        log_error("secondary server: connected to ", self->_endpoint);
 
         self->ReadData();
       };

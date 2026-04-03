@@ -230,3 +230,5 @@ namespace multigpu {
 
 } // namespace multigpu
 } // namespace carla
+
+//new_alpha_omega

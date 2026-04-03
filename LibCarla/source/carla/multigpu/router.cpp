@@ -189,7 +189,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
     _next = 0;
   }
   if (_next < _sessions.size()) {
-    // std::cout << "Sending to session " << _next << std::endl;
+    std::cout << "Sending to session " << _next << std::endl;
     auto s = _sessions[_next];
     if (s != nullptr) {
       _promises[s.get()] = response;
@@ -203,6 +203,11 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
   }
   std::cout << "incrementing next from " << _next << std::endl;
   ++_next;
+
+  if (_next >= _sessions.size()) {
+    std::cout << "Resetting next to 0" << std::endl;
+    _next = 0;
+  }
 
     double now = std::chrono::duration<double>(
         std::chrono::system_clock::now().time_since_epoch()
