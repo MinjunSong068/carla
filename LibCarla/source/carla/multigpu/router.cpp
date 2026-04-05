@@ -208,7 +208,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
     std::cout << "Resetting next to 0" << std::endl;
     _next = 0;
   }
-    log_error("router write to next done")
+    log_error("router write to next done");
     // double now = std::chrono::duration<double>(
     //     std::chrono::system_clock::now().time_since_epoch()
     //   ).count();
