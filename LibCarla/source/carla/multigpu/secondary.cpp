@@ -166,10 +166,11 @@ namespace multigpu {
           message->GetBufferSequence(),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
-    double now = std::chrono::duration<double>(
-    std::chrono::system_clock::now().time_since_epoch()
-    ).count();
-    TimestampLogger::GetInstance().Log("Secondary sent message", now, 0);
+    // double now = std::chrono::duration<double>(
+    // std::chrono::system_clock::now().time_since_epoch()
+    // ).count();
+    log_error("secondary server sent message");
+    // TimestampLogger::GetInstance().Log("Secondary sent message", now, 0);
   }
 
   void Secondary::Write(Buffer buffer) {
@@ -207,7 +208,8 @@ namespace multigpu {
     double now = std::chrono::duration<double>(
     std::chrono::system_clock::now().time_since_epoch()
     ).count();
-    TimestampLogger::GetInstance().Log("Secondary sent buffer", now, 0);
+    log_error("Secondary sent buffer");
+    // TimestampLogger::GetInstance().Log("Secondary sent buffer", now, 0);
   }
 
   void Secondary::Write(std::string text) {
@@ -246,7 +248,8 @@ namespace multigpu {
     double now = std::chrono::duration<double>(
     std::chrono::system_clock::now().time_since_epoch()
     ).count();
-    TimestampLogger::GetInstance().Log("Secondary sent text", now, 0);
+    log_error("secondary sent text");
+    // TimestampLogger::GetInstance().Log("Secondary sent text", now, 0);
   }
 
   void Secondary::ReadData() {

@@ -75,11 +75,11 @@ void Router::SetCallbacks(std::string route_ID) {
         log_error("Got data from secondary (with promise): ", buffer.size());
         prom->second->set_value({session, std::move(buffer)});
         self->_promises.erase(prom);
-
-        double now = std::chrono::duration<double>(
-        std::chrono::system_clock::now().time_since_epoch()
-        ).count();
-        TimestampLogger::GetInstance().Log("Data from secondary with promise", now, 0);
+        
+        // double now = std::chrono::duration<double>(
+        // std::chrono::system_clock::now().time_since_epoch()
+        // ).count();
+        // TimestampLogger::GetInstance().Log("Data from secondary with promise", now, 0);
 
       } else {
         log_info("Got data from secondary (without promise): ", buffer.size());
@@ -208,11 +208,11 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
     std::cout << "Resetting next to 0" << std::endl;
     _next = 0;
   }
-
-    double now = std::chrono::duration<double>(
-        std::chrono::system_clock::now().time_since_epoch()
-      ).count();
-    TimestampLogger::GetInstance().Log("router write to next done", now, 0);
+    log_error("router write to next done")
+    // double now = std::chrono::duration<double>(
+    //     std::chrono::system_clock::now().time_since_epoch()
+    //   ).count();
+    // TimestampLogger::GetInstance().Log("router write to next done", now, 0);
 
   return response->get_future();
 }

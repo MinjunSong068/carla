@@ -140,17 +140,18 @@ namespace multigpu {
           self->_on_response(self, message->pop());
           std::cout << "Getting data on listener\n";
 
-          double now = std::chrono::duration<double>(
-          std::chrono::system_clock::now().time_since_epoch()
-          ).count();
-          TimestampLogger::GetInstance().Log("Getting data on listener", now, 0);
+          // double now = std::chrono::duration<double>(
+          // std::chrono::system_clock::now().time_since_epoch()
+          // ).count();
+          // TimestampLogger::GetInstance().Log("Getting data on listener", now, 0);
+          log_error("Getting data on listener");
 
           self->ReadData();
-
-          now = std::chrono::duration<double>(
-          std::chrono::system_clock::now().time_since_epoch()
-          ).count();
-          TimestampLogger::GetInstance().Log("Got data on listener [DONE]", now, 0);
+          log_error("Getting data on listener [DONE]");
+          // now = std::chrono::duration<double>(
+          // std::chrono::system_clock::now().time_since_epoch()
+          // ).count();
+          // TimestampLogger::GetInstance().Log("Got data on listener [DONE]", now, 0);
 
         } else {
           // As usual, if anything fails start over from the very top.

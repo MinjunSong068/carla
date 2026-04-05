@@ -137,6 +137,9 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     if(Desc != "NONE"){
       log_error("Route ID: ", Desc.substr(Desc.find_last_of("_") + 1)); //get route_ID from description (after last "_")
     }
+    else {
+      log_error("Route ID: NONE");
+    }
 
     log_debug("Current server route ID: ", _router->GetRouteIDFromSession());
     log_debug("Sensor description: ", Desc);
