@@ -205,9 +205,9 @@ namespace multigpu {
     });
 
 
-    double now = std::chrono::duration<double>(
-    std::chrono::system_clock::now().time_since_epoch()
-    ).count();
+    // double now = std::chrono::duration<double>(
+    // std::chrono::system_clock::now().time_since_epoch()
+    // ).count();
     log_error("Secondary sent buffer");
     // TimestampLogger::GetInstance().Log("Secondary sent buffer", now, 0);
   }
@@ -245,9 +245,9 @@ namespace multigpu {
           boost::asio::buffer(text.c_str(), text.size()),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
-    double now = std::chrono::duration<double>(
-    std::chrono::system_clock::now().time_since_epoch()
-    ).count();
+    // double now = std::chrono::duration<double>(
+    // std::chrono::system_clock::now().time_since_epoch()
+    // ).count();
     log_error("secondary sent text");
     // TimestampLogger::GetInstance().Log("Secondary sent text", now, 0);
   }
