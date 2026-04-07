@@ -133,7 +133,7 @@ void FCarlaEngine::NotifyInitGame(const UCarlaSettings &Settings)
               }
             }
             // forces a tick
-            log_error("Forcing a tick from SEND_FRAME command");
+            carla::log_error("Forcing a tick from SEND_FRAME command");
             Server.Tick();
             break;
           }
