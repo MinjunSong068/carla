@@ -36,6 +36,8 @@ Router::Router(uint16_t port) :
 
   _route_ID = "NONE";
   _port = port;
+
+  log_error("Router with default route ID made");
 }
 
 Router::Router(uint16_t port, std::string route_ID) :
@@ -46,6 +48,8 @@ Router::Router(uint16_t port, std::string route_ID) :
 
   _route_ID = route_ID;
   _port = port;
+
+  log_error("Router with route ID made");
 }
 
 void Router::SetCallbacks(std::string route_ID) {
@@ -55,12 +59,14 @@ void Router::SetCallbacks(std::string route_ID) {
   carla::multigpu::Listener::callback_function_type on_open = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
+    log_error("Calling ConnectSession for route ID: ", route_ID);
     self->ConnectSession(session, route_ID);
   };
 
   carla::multigpu::Listener::callback_function_type on_close = [=](std::shared_ptr<carla::multigpu::Primary> session) {
     auto self = weak.lock();
     if (!self) return;
+    log_error("Calling DisconnectSession for route ID: ", route_ID);
     self->DisconnectSession(session, route_ID);
   };
 
@@ -107,13 +113,20 @@ boost::asio::ip::tcp::endpoint Router::GetLocalEndpoint() const {
   return _endpoint;
 }
 
-void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_ID) {
+void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_ID) { 
   DEBUG_ASSERT(session != nullptr);
   std::lock_guard<std::mutex> lock(_mutex);
   _sessions.emplace_back(std::move(session));
 
-  _connected_route_ids.emplace_back(route_ID);
 
+  if(route_ID == "") {
+    log_error("route ID is empty string");
+    _connected_route_ids.emplace_back(route_ID);
+  }
+  else {
+    log_error("Added route ID: ", route_ID);
+    _connected_route_ids.emplace_back(route_ID);
+  }
 
   log_info("Connected secondary servers:", _sessions.size());
   log_error("Connected secondary servers:", _sessions.size());

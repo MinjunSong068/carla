@@ -83,6 +83,7 @@ namespace detail {
       std::lock_guard<std::mutex> lock(_mutex);
       _sessions.emplace_back(std::move(session));
       log_debug("Connecting multistream sessions:", _sessions.size());
+      log_error("Connecting multistream sessions:", _sessions.size());
       if (_sessions.size() == 1) {
         _session.store(_sessions[0]);
       }

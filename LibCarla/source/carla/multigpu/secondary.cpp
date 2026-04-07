@@ -6,7 +6,7 @@
 
 #include "carla/multigpu/incomingMessage.h"
 #include "carla/multigpu/secondary.h"
-#include "carla/multigpu/TimestampLogger.h"
+// #include "carla/multigpu/TimestampLogger.h"
 
 #include "carla/BufferPool.h"
 #include "carla/Debug.h"
@@ -257,8 +257,12 @@ namespace multigpu {
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [weak]() {
       auto self = weak.lock();
-      if (!self) return;
+      if (!self){
+        log_error("secondary server: !self condition line 261");
+        return;
+      }
       if (self->_done) {
+        log_error("secondary server: self->_done is true line 265");
         return;
       }
 
@@ -266,13 +270,18 @@ namespace multigpu {
 
       auto handle_read_data = [weak, message](boost::system::error_code ec, size_t DEBUG_ONLY(bytes)) {
         auto self = weak.lock();
-        if (!self) return;
+        if (!self) {
+          log_error("secondary server: !self condition");
+          return;
+        }
         if (!ec) {
           DEBUG_ASSERT_EQ(bytes, message->size());
           DEBUG_ASSERT_NE(bytes, 0u);
           // Move the buffer to the callback function and start reading the next
           // piece of data.
+          log_error("Sending data to commander");
           self->GetCommander().process_command(message->pop());
+          log_error("Data sent to commander");
           self->ReadData();
         } else {
           // As usual, if anything fails start over from the very top.
@@ -289,6 +298,7 @@ namespace multigpu {
           if (!ec && (message->size() > 0u)) {
             DEBUG_ASSERT_EQ(bytes, sizeof(carla::streaming::detail::message_size_type));
             if (self->_done) {
+              log_error("secondary server: self->done");
               return;
             }
             // Now that we know the size of the coming buffer, we can allocate our

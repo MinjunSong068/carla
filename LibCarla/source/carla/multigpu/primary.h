@@ -104,6 +104,8 @@ namespace multigpu {
 
     bool _is_writing = false;
 
+    std::string route_id;
+
   };
 
 } // namespace multigpu

@@ -19,8 +19,6 @@
 #include <atomic>
 #include <thread>
 
-#include "carla/multigpu/TimestampLogger.h"
-
 namespace carla {
 namespace multigpu {
 

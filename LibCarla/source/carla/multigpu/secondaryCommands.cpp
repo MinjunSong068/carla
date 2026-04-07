@@ -4,9 +4,9 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-// #include "carla/Logging.h"
+#include "carla/Logging.h"
 #include "carla/multigpu/secondaryCommands.h"
-// #include "carla/streaming/detail/tcp/Message.h"
+#include "carla/streaming/detail/tcp/Message.h"
 
 namespace carla {
 namespace multigpu {
@@ -28,6 +28,7 @@ void SecondaryCommands::process_command(Buffer buffer) {
   Buffer data(buffer.data() + sizeof(CommandHeader), header->size);
   _callback(header->id, std::move(data));
 
+  log_error("Secondary got a command to process");
   // log_info("Secondary got a command to process");
 }
 

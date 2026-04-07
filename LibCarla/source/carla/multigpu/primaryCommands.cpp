@@ -18,7 +18,7 @@
 #include "carla/streaming/detail/Token.h"
 #include "carla/streaming/detail/Types.h"
 
-#include "carla/multigpu/TimestampLogger.h"
+// #include "carla/multigpu/TimestampLogger.h"
 
 
 namespace carla {
@@ -38,6 +38,7 @@ void PrimaryCommands::set_router(std::shared_ptr<Router> router) {
 // broadcast to all secondary servers the frame data
 void PrimaryCommands::SendFrameData(carla::Buffer buffer) {
   _router->Write(MultiGPUCommand::SEND_FRAME, std::move(buffer));
+  log_error("sending frame command");
   // log_info("sending frame command");
 }
 
@@ -45,6 +46,7 @@ void PrimaryCommands::SendFrameData(carla::Buffer buffer) {
 void PrimaryCommands::SendLoadMap(std::string map) {
   carla::Buffer buf((unsigned char *) map.c_str(), (size_t) map.size() + 1);
   _router->Write(MultiGPUCommand::LOAD_MAP, std::move(buf));
+  log_error("sending load map command");
 }
 
 // send to who the router wants the request for a token
