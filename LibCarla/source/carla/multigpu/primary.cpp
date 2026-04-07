@@ -125,7 +125,9 @@ namespace multigpu {
       auto self = weak.lock();
       if (!self) return;
 
+      log_error("Primary: getting message from buffer pool");
       auto message = std::make_shared<IncomingMessage>(self->_buffer_pool->Pop());
+      log_error("Primary: got message from buffer pool");
 
       auto handle_read_data = [weak, message](boost::system::error_code ec, size_t DEBUG_ONLY(bytes)) {
         auto self = weak.lock();

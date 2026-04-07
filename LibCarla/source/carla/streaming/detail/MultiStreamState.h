@@ -40,6 +40,7 @@ namespace detail {
         auto message = Session::MakeMessage(buffers...);
         session->Write(std::move(message));
         log_debug("sensor ", session->get_stream_id()," data sent");
+        log_error("sensor single stream ", session->get_stream_id()," data sent");
         // Return here, _session is only valid if we have a
         // single session.
         return;
@@ -53,6 +54,7 @@ namespace detail {
           if (s != nullptr) {
             s->Write(message);
             log_debug("sensor ", s->get_stream_id()," data sent ");
+            log_error("sensor multiple stream ", s->get_stream_id()," data sent ");
          }
         }
       }

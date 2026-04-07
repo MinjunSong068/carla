@@ -120,6 +120,7 @@ void Router::ConnectSession(std::shared_ptr<Primary> session, std::string route_
 
   if(route_ID == "") {
     log_error("route ID is empty string");
+    log_error("Should be: ", session->GetRouteID());
     _connected_route_ids.emplace_back(route_ID);
   }
   else {
