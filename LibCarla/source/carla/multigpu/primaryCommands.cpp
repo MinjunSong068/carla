@@ -25,24 +25,30 @@ PrimaryCommands::PrimaryCommands(std::shared_ptr<Router> router) :
 }
 
 void PrimaryCommands::set_router(std::shared_ptr<Router> router) {
+  log_error("PRIMARY: SETTING ROUTER");
   _router = router;
 }
 
 // broadcast to all secondary servers the frame data
 void PrimaryCommands::SendFrameData(carla::Buffer buffer) {
+  log_error("SEND FRAME DATA");
   _router->Write(MultiGPUCommand::SEND_FRAME, std::move(buffer));
   // log_info("sending frame command");
+  log_error("SEND FRAME DATA: DONE")
 }
 
 // broadcast to all secondary servers the map to load
 void PrimaryCommands::SendLoadMap(std::string map) {
+  log_error("SEND LOAD MAP");
   carla::Buffer buf((unsigned char *) map.c_str(), (size_t) map.size() + 1);
   _router->Write(MultiGPUCommand::LOAD_MAP, std::move(buf));
+  log_error("SEND LOAD MAP: DONE")
 }
 
 // send to who the router wants the request for a token
 token_type PrimaryCommands::SendGetToken(stream_id sensor_id) {
   log_info("asking for a token");
+  log_error("asking for a token");
   carla::Buffer buf((carla::Buffer::value_type *) &sensor_id,
                     (size_t) sizeof(stream_id));
   auto fut = _router->WriteToNext(MultiGPUCommand::GET_TOKEN, std::move(buf));
@@ -50,17 +56,20 @@ token_type PrimaryCommands::SendGetToken(stream_id sensor_id) {
   auto response = fut.get();
   token_type new_token(*reinterpret_cast<carla::streaming::detail::token_data *>(response.buffer.data()));
   log_info("got a token: ", new_token.get_stream_id(), ", ", new_token.get_port());
+  log_error("asking for a token DONE");
   return new_token;
 }
 
 // send to know if a connection is alive
 void PrimaryCommands::SendIsAlive() {
+  log_error("Primary commands, send is alive");
   std::string msg("Are you alive?");
   carla::Buffer buf((unsigned char *) msg.c_str(), (size_t) msg.size());
   log_info("sending is alive command");
   auto fut = _router->WriteToNext(MultiGPUCommand::YOU_ALIVE, std::move(buf));
   auto response = fut.get();
   log_info("response from alive command: ", response.buffer.data());
+  log_error("Primary commands, DONE with send is alive");
 }
 
 void PrimaryCommands::SendEnableForROS(stream_id sensor_id) {
@@ -112,10 +121,12 @@ bool PrimaryCommands::SendIsEnabledForROS(stream_id sensor_id) {
 
 token_type PrimaryCommands::GetToken(stream_id sensor_id) {
   // search if the sensor has been activated in any secondary server
+  log_error("in primary commands, GetToken");
   auto it = _tokens.find(sensor_id);
   if (it != _tokens.end()) {
     // return already activated sensor token
     log_debug("Using token from already activated sensor: ", it->second.get_stream_id(), ", ", it->second.get_port());
+    log_error("Using token from already activated sensor: ", it->second.get_stream_id(), ", ", it->second.get_port());
     return it->second;
   }
   else {
@@ -126,6 +137,7 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id) {
     _tokens[sensor_id] = token;
     _servers[sensor_id] = server;
     log_debug("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
+    log_error("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
     return token;
   }
 }

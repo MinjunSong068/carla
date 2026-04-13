@@ -5,7 +5,7 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "carla/multigpu/router.h"
-
+#include "carla/Logging.h"
 #include "carla/multigpu/listener.h"
 #include "carla/streaming/EndPoint.h"
 
@@ -35,6 +35,7 @@ Router::Router(uint16_t port) :
 
 void Router::SetCallbacks() {
   // prepare server
+  log_error("Router: Setting callbacks");
   std::weak_ptr<Router> weak = shared_from_this();
 
   carla::multigpu::Listener::callback_function_type on_open = [=](std::shared_ptr<carla::multigpu::Primary> session) {
@@ -88,6 +89,7 @@ void Router::ConnectSession(std::shared_ptr<Primary> session) {
   std::lock_guard<std::mutex> lock(_mutex);
   _sessions.emplace_back(std::move(session));
   log_info("Connected secondary servers:", _sessions.size());
+  log_error("Connected secondary servers:", _sessions.size());
   // run external callback for new connections
   if (_callback)
     _callback();
@@ -101,6 +103,7 @@ void Router::DisconnectSession(std::shared_ptr<Primary> session) {
       std::remove(_sessions.begin(), _sessions.end(), session),
       _sessions.end());
   log_info("Connected secondary servers:", _sessions.size());
+  log_error("Connected secondary servers:", _sessions.size());
 }
 
 void Router::ClearSessions() {
@@ -110,6 +113,7 @@ void Router::ClearSessions() {
 }
 
 void Router::Write(MultiGPUCommand id, Buffer &&buffer) {
+  log_error("ROUTER: WRITE");
   // define the command header
   CommandHeader header;
   header.id = id;
@@ -130,6 +134,7 @@ void Router::Write(MultiGPUCommand id, Buffer &&buffer) {
 }
 
 std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer) {
+  log_error("ROUTER: WRITE TO NEXT");
   // define the command header
   CommandHeader header;
   header.id = id;
@@ -162,6 +167,7 @@ std::future<SessionInfo> Router::WriteToNext(MultiGPUCommand id, Buffer &&buffer
 }
 
 std::future<SessionInfo> Router::WriteToOne(std::weak_ptr<Primary> server, MultiGPUCommand id, Buffer &&buffer) {
+  log_error("ROUTER: WRITE TO ONE");
   // define the command header
   CommandHeader header;
   header.id = id;
@@ -186,6 +192,7 @@ std::future<SessionInfo> Router::WriteToOne(std::weak_ptr<Primary> server, Multi
 }
 
 std::weak_ptr<Primary> Router::GetNextServer() {
+  log_error("ROUTER: GET NEXT SERVER");
   std::lock_guard<std::mutex> lock(_mutex);
   if (_next >= _sessions.size()) {
     _next = 0;

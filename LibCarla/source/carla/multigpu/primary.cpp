@@ -66,6 +66,7 @@ namespace multigpu {
   }
 
   void Primary::Write(std::shared_ptr<const carla::streaming::detail::tcp::Message> message) {
+    log_error("PRIMARY: WRITE MESSAGE");
     DEBUG_ASSERT(message != nullptr);
     DEBUG_ASSERT(!message->empty());
     std::weak_ptr<Primary> weak = shared_from_this();
@@ -96,6 +97,7 @@ namespace multigpu {
   }
 
   void Primary::Write(std::string text) {
+    log_error("PRIMARY: WRITE TEXT");
     std::weak_ptr<Primary> weak = shared_from_this();
     boost::asio::post(_strand, [=]() {
       auto self = weak.lock();

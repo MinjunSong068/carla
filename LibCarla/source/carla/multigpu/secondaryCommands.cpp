@@ -4,7 +4,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-// #include "carla/Logging.h"
+#include "carla/Logging.h"
 #include "carla/multigpu/secondaryCommands.h"
 // #include "carla/streaming/detail/tcp/Message.h"
 
@@ -29,6 +29,7 @@ void SecondaryCommands::process_command(Buffer buffer) {
   _callback(header->id, std::move(data));
 
   // log_info("Secondary got a command to process");
+  log_error("SECONDARY: COMMAND TO PROCESS");
 }
 
 

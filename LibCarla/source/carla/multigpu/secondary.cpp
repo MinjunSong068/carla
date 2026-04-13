@@ -58,6 +58,7 @@ namespace multigpu {
   }
 
   void Secondary::Connect() {
+    log_error("SECONDARY: CONNECT");
     AsyncRun(2u);
 
     _commander.set_secondary(shared_from_this());
@@ -94,6 +95,7 @@ namespace multigpu {
         self->_socket.set_option(boost::asio::ip::tcp::no_delay(true));
 
         log_info("secondary server: connected to ", self->_endpoint);
+        log_error("secondary server: connected to ", self->_endpoint);
 
         self->ReadData();
       };
@@ -103,6 +105,7 @@ namespace multigpu {
   }
 
   void Secondary::Stop() {
+    log_error("SECONDARY: STOP");
     _connection_timer.cancel();
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [weak]() {
@@ -116,6 +119,7 @@ namespace multigpu {
   }
 
   void Secondary::Reconnect() {
+    log_error("SECONDARY: ATTEMPING RECONNECT");
     std::weak_ptr<Secondary> weak = shared_from_this();
     _connection_timer.expires_from_now(time_duration::seconds(1u));
     _connection_timer.async_wait([weak](boost::system::error_code ec) {
@@ -128,10 +132,12 @@ namespace multigpu {
   }
 
   void Secondary::AsyncRun(size_t worker_threads) {
+    log_error("SECONDARY: ASYNC RUN");
     _pool.AsyncRun(worker_threads);
   }
 
   void Secondary::Write(std::shared_ptr<const carla::streaming::detail::tcp::Message> message) {
+    log_error("STARTING SECONDARY WRITE MESSAGE");
     DEBUG_ASSERT(message != nullptr);
     DEBUG_ASSERT(!message->empty());
     std::weak_ptr<Secondary> weak = shared_from_this();
@@ -139,6 +145,7 @@ namespace multigpu {
       auto self = weak.lock();
       if (!self) return;
       if (!self->_socket.is_open()) {
+        log_error("SOCKET IS OPEN, RETURNING");
         return;
       }
 
@@ -156,9 +163,11 @@ namespace multigpu {
           message->GetBufferSequence(),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+    log_error("WRITE DONE");
   }
 
   void Secondary::Write(Buffer buffer) {
+    log_error("STARTING SECONDARY WRITE BUFFER");
     auto view_data = carla::BufferView::CreateFrom(std::move(buffer));
     auto message = Secondary::MakeMessage(view_data);
 
@@ -186,9 +195,11 @@ namespace multigpu {
           message->GetBufferSequence(),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+    log_error("SECONDARY WRITE BUFFER DONE");
   }
 
   void Secondary::Write(std::string text) {
+    log_error("STARTING SECONDARY WRITE TEXT");
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [=]() {
       auto self = weak.lock();
@@ -219,9 +230,11 @@ namespace multigpu {
           boost::asio::buffer(text.c_str(), text.size()),
           boost::asio::bind_executor(self->_strand, handle_sent));
     });
+    log_error("SECONDARY WRITE TEXT DONE");
   }
 
   void Secondary::ReadData() {
+    log_error("STARTING SECONDARY READ DATA");
     std::weak_ptr<Secondary> weak = shared_from_this();
     boost::asio::post(_strand, [weak]() {
       auto self = weak.lock();
@@ -242,6 +255,7 @@ namespace multigpu {
           // piece of data.
           self->GetCommander().process_command(message->pop());
           self->ReadData();
+          log_error("GOT COMMAND TO PROCESS FROM COMMANDER");
         } else {
           // As usual, if anything fails start over from the very top.
           log_error("secondary server: failed to read data: ", ec.message());
