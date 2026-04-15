@@ -180,6 +180,14 @@ token_type PrimaryCommands::GetToken(stream_id sensor_id, std::string Desc) { //
     _servers[sensor_id] = server;
     log_debug("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
     log_error("Using token from new activated sensor: ", token.get_stream_id(), ", ", token.get_port());
+
+    if(token.has_address()) {
+      log_error("Token address: ", token.get_address());
+    }
+    else {
+      log_error("no token address");
+    }
+
     return token;
   }
 }
